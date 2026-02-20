@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -14,6 +14,30 @@ export default function UploadSalePage() {
     const [preview, setPreview] = useState<string | null>(null);
     const [uploadProgress, setUploadProgress] = useState<string | null>(null);
     const [dragActive, setDragActive] = useState(false);
+
+    // Novas variaveis de estado
+    const [brands, setBrands] = useState<{ id: string; name: string }[]>([]);
+    const [selectedBrand, setSelectedBrand] = useState<string>("");
+    const [reference, setReference] = useState<string>("");
+
+    useEffect(() => {
+        async function fetchInitialData() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data: profile } = await supabase.from("profiles").select("brand_id").eq("id", user.id).single();
+                if (profile?.brand_id) setSelectedBrand(profile.brand_id);
+            }
+            const { data: brandsData } = await supabase.from("brands").select("id, name").order("name");
+            console.log("ALL BRANDS IN DB:", brandsData);
+            if (brandsData) {
+                const allowedBrands = ["nike", "náutica", "nautica", "donna karan", "donna"];
+                const filtered = brandsData.filter(b => allowedBrands.some(allowed => b.name.toLowerCase().includes(allowed)));
+                console.log("FILTERED BRANDS:", filtered);
+                setBrands(filtered);
+            }
+        }
+        fetchInitialData();
+    }, []);
 
     const handleFile = (file: File) => {
         if (file && file.type.startsWith("image/")) {
@@ -102,7 +126,8 @@ export default function UploadSalePage() {
             // 3. Insert Record
             const { error: saleError } = await supabase.from("sales").insert({
                 seller_id: user.id,
-                brand_id: profile.brand_id,
+                brand_id: selectedBrand || profile.brand_id,
+                reference: reference || null,
                 invoice_photo_url: uploadData.path,
                 status: "pending",
             });
@@ -178,6 +203,35 @@ export default function UploadSalePage() {
                                         </div>
                                     </div>
                                 )}
+                            </div>
+
+                            {/* New Fields: Brand and Reference */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Marca Vendida</label>
+                                    <select
+                                        required
+                                        value={selectedBrand}
+                                        onChange={(e) => setSelectedBrand(e.target.value)}
+                                        className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000] appearance-none bg-white transition-all text-gray-900"
+                                    >
+                                        <option value="" disabled>Selecione a marca</option>
+                                        {brands.map(brand => (
+                                            <option key={brand.id} value={brand.id}>{brand.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Referência (Opcional)</label>
+                                    <input
+                                        type="text"
+                                        value={reference}
+                                        onChange={(e) => setReference(e.target.value)}
+                                        placeholder="Ex: REF-12345"
+                                        className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000] bg-white transition-all text-gray-900"
+                                    />
+                                </div>
                             </div>
 
                             {/* Guidelines */}

@@ -6,6 +6,27 @@ import { useRouter } from "next/navigation";
 import DashboardShell from "@/components/DashboardShell";
 import EditSellerModal from "@/components/EditSellerModal";
 
+const formatCPF = (value: string) => {
+    if (!value) return '';
+    return value
+        .replace(/\D/g, '')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+        .replace(/(-\d{2})\d+?$/, '$1');
+};
+
+const formatCNPJ = (value: string) => {
+    if (!value) return '';
+    return value
+        .replace(/\D/g, '')
+        .replace(/(\d{2})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1/$2')
+        .replace(/(\d{4})(\d{1,2})/, '$1-$2')
+        .replace(/(-\d{2})\d+?$/, '$1');
+};
+
 export default function AdminSellersPage() {
     const router = useRouter();
     const [sellers, setSellers] = useState<any[]>([]);
@@ -110,16 +131,13 @@ export default function AdminSellersPage() {
                                                 <div>
                                                     <div className="font-medium text-gray-900">{seller.full_name}</div>
                                                     <div className="text-xs text-gray-500">{seller.email}</div>
-                                                    <div className="text-[10px] text-gray-400 mt-0.5">{seller.cpf}</div>
+                                                    <div className="text-[10px] text-gray-400 mt-0.5">{formatCPF(seller.cpf)}</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="text-sm text-gray-900 font-medium">{seller.optic_name}</div>
-                                            <div className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600 mt-1">
-                                                {seller.brands?.name || "Sem Marca"}
-                                            </div>
-                                            <div className="text-xs text-gray-400 mt-1">CNPJ: {seller.cnpj}</div>
+                                            <div className="text-xs text-gray-400 mt-1">CNPJ: {formatCNPJ(seller.cnpj)}</div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium

@@ -3,6 +3,25 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
+const formatCPF = (value: string) => {
+    return value
+        .replace(/\D/g, '')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+        .replace(/(-\d{2})\d+?$/, '$1');
+};
+
+const formatCNPJ = (value: string) => {
+    return value
+        .replace(/\D/g, '')
+        .replace(/(\d{2})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1/$2')
+        .replace(/(\d{4})(\d{1,2})/, '$1-$2')
+        .replace(/(-\d{2})\d+?$/, '$1');
+};
+
 interface EditSellerModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -21,20 +40,10 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
         status: "",
         role: "seller" // Default, but will be overwritten
     });
-    const [brands, setBrands] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
-    // Fetch brands on mount
-    useEffect(() => {
-        async function fetchBrands() {
-            const { data } = await supabase.from("brands").select("*").order("name");
-            if (data) setBrands(data);
-        }
-        fetchBrands();
-    }, []);
 
     // Load seller data when modal opens
     useEffect(() => {
@@ -99,9 +108,7 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
                     cpf: formData.cpf,
                     cnpj: formData.cnpj,
                     optic_name: formData.optic_name,
-                    brand_id: formData.brand_id || null, // handle empty string as null
-                    status: formData.status,
-                    role: formData.role
+                    status: formData.status
                 })
                 .eq("id", seller.id);
 
@@ -205,9 +212,10 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
                                 <label className="block text-sm font-medium text-gray-700 mb-1">CPF</label>
                                 <input
                                     type="text"
+                                    maxLength={14}
                                     className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000]"
                                     value={formData.cpf}
-                                    onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
+                                    onChange={(e) => setFormData({ ...formData, cpf: formatCPF(e.target.value) })}
                                 />
                             </div>
 
@@ -215,9 +223,10 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
                                 <label className="block text-sm font-medium text-gray-700 mb-1">CNPJ</label>
                                 <input
                                     type="text"
+                                    maxLength={18}
                                     className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000]"
                                     value={formData.cnpj}
-                                    onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })}
+                                    onChange={(e) => setFormData({ ...formData, cnpj: formatCNPJ(e.target.value) })}
                                 />
                             </div>
 
@@ -231,31 +240,7 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Marca Representada</label>
-                                <select
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000] bg-white"
-                                    value={formData.brand_id}
-                                    onChange={(e) => setFormData({ ...formData, brand_id: e.target.value })}
-                                >
-                                    <option value="">Selecione uma marca...</option>
-                                    {brands.map(brand => (
-                                        <option key={brand.id} value={brand.id}>{brand.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Usuário</label>
-                                <select
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000] bg-white"
-                                    value={formData.role}
-                                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                >
-                                    <option value="seller">Vendedor</option>
-                                    <option value="representative">Representante</option>
-                                </select>
-                            </div>
+                            {/* Marca Representada e Tipo de Usuário foram removidos, pois todos são representantes gerais */}
 
                             <div className="col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Status da Conta</label>

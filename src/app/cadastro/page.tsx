@@ -4,24 +4,15 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
-interface Brand {
-    id: string;
-    name: string;
-}
-
 export default function CadastroPage() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [brands, setBrands] = useState<Brand[]>([]);
 
     const [optics, setOptics] = useState<any[]>([]);
 
     useEffect(() => {
         async function fetchData() {
-            const { data: brandsData } = await supabase.from("brands").select("id, name");
-            if (brandsData) setBrands(brandsData);
-
             const { data: opticsData } = await supabase.from("optics").select("*").eq("active", true).order("corporate_name");
             if (opticsData) setOptics(opticsData);
         }
@@ -33,7 +24,6 @@ export default function CadastroPage() {
         cpf: "",
         email: "",
         password: "",
-        marcaId: "",
         nomeOtica: "",
         cnpj: "",
         chavePix: "",
@@ -69,7 +59,7 @@ export default function CadastroPage() {
                         cpf: formData.cpf.replace(/\D/g, ""), // Remove formatação
                         role: "representative",
                         status: "pending",
-                        brand_id: formData.marcaId, // Maps to UUID
+                        brand_id: null, // Todos vendem todas as marcas
                         optic_name: formData.nomeOtica, // Maps to optic_name
                         cnpj: formData.cnpj.replace(/\D/g, ""), // Remove formatação
                         chave_pix: formData.chavePix, // Added column
@@ -192,19 +182,7 @@ export default function CadastroPage() {
                             </div>
 
                             <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Marca Representada</label>
-                                    <select
-                                        className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#C00000] focus:ring-1 focus:ring-[#C00000] outline-none transition-all text-gray-700"
-                                        onChange={(e) => setFormData({ ...formData, marcaId: e.target.value })}
-                                        defaultValue=""
-                                    >
-                                        <option value="" disabled>Selecione uma marca...</option>
-                                        {brands.map(brand => (
-                                            <option key={brand.id} value={brand.id}>{brand.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                                {/* Marca Representada removida, representantes vendem todas as marcas */}
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-gray-700">Sua Ótica</label>
