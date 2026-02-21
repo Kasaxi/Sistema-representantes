@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import DashboardShell from "@/components/DashboardShell";
 import EditSellerModal from "@/components/EditSellerModal";
+import UploadReceiptModal from "@/components/UploadReceiptModal";
 
 const formatCPF = (value: string) => {
     if (!value) return '';
@@ -34,6 +35,7 @@ export default function AdminSellersPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [editingSeller, setEditingSeller] = useState<any>(null);
+    const [receiptSeller, setReceiptSeller] = useState<any>(null);
     const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
 
     const fetchSellers = async () => {
@@ -158,6 +160,14 @@ export default function AdminSellersPage() {
                                                 >
                                                     Editar
                                                 </button>
+                                                {seller.status === 'approved' && (
+                                                    <button
+                                                        onClick={() => setReceiptSeller(seller)}
+                                                        className="px-3 py-1.5 bg-green-100 text-green-700 text-xs font-semibold rounded hover:bg-green-200 transition-colors"
+                                                    >
+                                                        Pagamento
+                                                    </button>
+                                                )}
                                                 {seller.status === 'pending' && (
                                                     <>
                                                         <button
@@ -197,6 +207,15 @@ export default function AdminSellersPage() {
                 seller={editingSeller}
                 onSuccess={(msg) => {
                     fetchSellers();
+                    setToast({ message: msg, type: 'success' });
+                }}
+            />
+
+            <UploadReceiptModal
+                isOpen={!!receiptSeller}
+                onClose={() => setReceiptSeller(null)}
+                seller={receiptSeller}
+                onSuccess={(msg) => {
                     setToast({ message: msg, type: 'success' });
                 }}
             />

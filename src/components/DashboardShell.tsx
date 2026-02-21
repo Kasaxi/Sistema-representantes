@@ -9,7 +9,7 @@ import MarketingPopup from "./MarketingPopup";
 
 interface DashboardShellProps {
     children: React.ReactNode;
-    userRole?: "admin" | "representative";
+    userRole?: "admin" | "representative" | "seller";
 }
 
 export default function DashboardShell({ children, userRole = "representative" }: DashboardShellProps) {
@@ -49,20 +49,22 @@ export default function DashboardShell({ children, userRole = "representative" }
 
     const navItems = effectiveRole === "admin" ? [
         { name: "Visão Geral", href: "/admin", icon: "LayoutDashboard" },
+        { name: "Auditoria", href: "/admin/auditoria", icon: "FileCheck" },
+        { name: "Ranking", href: "/admin/ranking", icon: "Trophy" },
+        { name: "Prêmios", href: "/premios", icon: "Gem" },
+        { name: "Marketing", href: "/admin/marketing", icon: "Megaphone" },
+        { name: "Marcas", href: "/admin/marcas", icon: "Tag" },
+        { name: "Relatórios", href: "/admin/relatorios", icon: "BarChart3" },
         { name: "Vendedores", href: "/admin/vendedores", icon: "Users" },
         { name: "Óticas", href: "/admin/oticas", icon: "Glasses" },
-        { name: "Ranking", href: "/admin/ranking", icon: "Trophy" },
-        { name: "Prêmios", href: "/premios", icon: "Gem" }, // New Link
-        { name: "Auditoria", href: "/admin/auditoria", icon: "FileCheck" },
-        { name: "Relatórios", href: "/admin/relatorios", icon: "BarChart3" },
-        { name: "Marketing", href: "/admin/marketing", icon: "Megaphone" },
         { name: "Enviar Nota", href: "/enviar-nota", icon: "Upload" },
     ] : [
-        { name: "Meu Painel", href: "/dashboard", icon: "LayoutDashboard" },
-        { name: "Enviar Nota", href: "/enviar-nota", icon: "Upload" },
+        { name: "Visão Geral", href: "/dashboard", icon: "LayoutDashboard" },
+        { name: "Lançar Notas", href: "/enviar-nota", icon: "Upload" },
         { name: "Minhas Vendas", href: "/vendas", icon: "Receipt" },
         { name: "Ranking", href: "/ranking", icon: "Trophy" },
         { name: "Prêmios", href: "/premios", icon: "Gem" },
+        { name: "Meu Perfil", href: "/dashboard/perfil", icon: "Users" },
     ];
 
     return (
@@ -138,6 +140,7 @@ export default function DashboardShell({ children, userRole = "representative" }
                                     {item.icon === "BarChart3" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>}
                                     {item.icon === "Upload" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>}
                                     {item.icon === "Megaphone" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>}
+                                    {item.icon === "Tag" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>}
                                     {item.icon === "Receipt" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>}
                                 </div>
                                 {!isCollapsed && <span className="animate-in fade-in duration-200">{item.name}</span>}
