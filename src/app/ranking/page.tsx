@@ -117,7 +117,7 @@ export default function RepresentativeRankingPage() {
                         <select
                             value={filters.brandId}
                             onChange={(e) => setFilters({ ...filters, brandId: e.target.value })}
-                            className="w-full bg-gray-50 border-gray-200 text-gray-900 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                            className="w-full bg-gray-50 border-gray-200 text-gray-900 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                         >
                             <option value="all">Todas as Marcas</option>
                             {brands.map(brand => (
@@ -130,7 +130,7 @@ export default function RepresentativeRankingPage() {
                         <select
                             value={filters.period}
                             onChange={(e) => setFilters({ ...filters, period: e.target.value })}
-                            className="w-full bg-gray-50 border-gray-200 text-gray-900 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                            className="w-full bg-gray-50 border-gray-200 text-gray-900 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                         >
                             <option value="current_month">Mês Atual</option>
                             <option value="last_30_days">Últimos 30 Dias</option>
@@ -143,7 +143,7 @@ export default function RepresentativeRankingPage() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     {loading ? (
                         <div className="p-12 text-center">
-                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#C00000]"></div>
+                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#0066FF]"></div>
                             <p className="mt-4 text-gray-400 text-sm font-medium">Calculando posições...</p>
                         </div>
                     ) : ranking.length === 0 ? (
@@ -155,7 +155,7 @@ export default function RepresentativeRankingPage() {
                             {ranking.map((item, index) => {
                                 const isCurrentUser = item.id === currentUserId;
                                 return (
-                                    <div key={item.id} className={`p-6 flex items-center gap-6 transition-colors group relative ${isCurrentUser ? 'bg-red-50/50' : 'hover:bg-gray-50'}`}>
+                                    <div key={item.id} className={`p-6 flex items-center gap-6 transition-colors group relative ${isCurrentUser ? 'bg-blue-50/50' : 'hover:bg-gray-50'}`}>
                                         {/* Position Badge */}
                                         <div className={`
                                             flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-xl font-black
@@ -170,7 +170,7 @@ export default function RepresentativeRankingPage() {
                                         {/* User Info */}
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <h3 className={`text-lg font-bold truncate ${isCurrentUser ? 'text-[#C00000]' : 'text-gray-900'}`}>
+                                                <h3 className={`text-lg font-bold truncate ${isCurrentUser ? 'text-[#0066FF]' : 'text-gray-900'}`}>
                                                     {item.name} {isCurrentUser && "(Você)"}
                                                 </h3>
                                                 {index < 3 && (

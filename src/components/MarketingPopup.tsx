@@ -136,7 +136,7 @@ export default function MarketingPopup() {
                                 checked={dontShowAgain}
                                 onChange={e => setDontShowAgain(e.target.checked)}
                             />
-                            <div className="w-5 h-5 border-2 border-gray-300 rounded peer-checked:bg-[#C00000] peer-checked:border-[#C00000] transition-all" />
+                            <div className="w-5 h-5 border-2 border-gray-300 rounded peer-checked:bg-[#0066FF] peer-checked:border-[#0066FF] transition-all" />
                             <div className="absolute inset-0 flex items-center justify-center text-white scale-0 peer-checked:scale-100 transition-transform">
                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
                             </div>
@@ -146,7 +146,7 @@ export default function MarketingPopup() {
 
                     <button
                         onClick={handleClose}
-                        className="px-8 py-3 bg-[#C00000] text-white font-bold rounded-xl hover:bg-[#A00000] shadow-lg shadow-red-900/10 transition-all active:scale-95"
+                        className="px-8 py-3 bg-[#0066FF] text-white font-bold rounded-xl hover:bg-[#0052CC] shadow-lg shadow-blue-900/10 transition-all active:scale-95"
                     >
                         Entendido
                     </button>

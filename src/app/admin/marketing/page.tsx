@@ -137,7 +137,7 @@ export default function AdminMarketingPage() {
                             setCurrentCampaign({ start_date: new Date().toISOString().split('T')[0], priority: 0, is_active: true });
                             setIsModalOpen(true);
                         }}
-                        className="bg-[#C00000] text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-[#A00000] transition-colors"
+                        className="bg-[#0066FF] text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-[#0052CC] transition-colors"
                     >
                         <Plus className="w-4 h-4" /> Nova Campanha
                     </button>
@@ -145,7 +145,7 @@ export default function AdminMarketingPage() {
 
                 {loading ? (
                     <div className="flex justify-center p-12">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C00000]"></div>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0066FF]"></div>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -229,7 +229,7 @@ export default function AdminMarketingPage() {
                                 <input
                                     required
                                     type="text"
-                                    className="w-full h-10 px-3 border border-gray-200 rounded-lg outline-none focus:border-[#C00000]"
+                                    className="w-full h-10 px-3 border border-gray-200 rounded-lg outline-none focus:border-[#0066FF]"
                                     value={currentCampaign?.title || ""}
                                     onChange={e => setCurrentCampaign({ ...currentCampaign, title: e.target.value })}
                                     placeholder="Ex: Campanha Dia das Mães"
@@ -243,7 +243,7 @@ export default function AdminMarketingPage() {
                                         accept="image/*"
                                         onChange={handleImageUpload}
                                         disabled={uploading}
-                                        className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#C00000] file:text-white hover:file:bg-[#A00000] transition-all cursor-pointer"
+                                        className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#0066FF] file:text-white hover:file:bg-[#0052CC] transition-all cursor-pointer"
                                     />
                                     {uploading && <span className="text-sm text-gray-500">Enviando...</span>}
                                 </div>
@@ -254,7 +254,7 @@ export default function AdminMarketingPage() {
 
                                 <input
                                     type="url"
-                                    className="w-full h-10 px-3 mt-2 border border-gray-200 rounded-lg outline-none focus:border-[#C00000] text-sm text-gray-400 bg-gray-50"
+                                    className="w-full h-10 px-3 mt-2 border border-gray-200 rounded-lg outline-none focus:border-[#0066FF] text-sm text-gray-400 bg-gray-50"
                                     value={currentCampaign?.image_url || ""}
                                     onChange={e => setCurrentCampaign({ ...currentCampaign, image_url: e.target.value })}
                                     placeholder="URL da imagem (Gerada automaticamente após upload)"
@@ -271,7 +271,7 @@ export default function AdminMarketingPage() {
                                     <input
                                         required
                                         type="date"
-                                        className="w-full h-10 px-3 border border-gray-200 rounded-lg outline-none focus:border-[#C00000]"
+                                        className="w-full h-10 px-3 border border-gray-200 rounded-lg outline-none focus:border-[#0066FF]"
                                         value={currentCampaign?.start_date?.split('T')[0] || ""}
                                         onChange={e => setCurrentCampaign({ ...currentCampaign, start_date: e.target.value })}
                                     />
@@ -280,7 +280,7 @@ export default function AdminMarketingPage() {
                                     <label className="block text-sm font-bold text-gray-700 mb-1">Data Término (Opcional)</label>
                                     <input
                                         type="date"
-                                        className="w-full h-10 px-3 border border-gray-200 rounded-lg outline-none focus:border-[#C00000]"
+                                        className="w-full h-10 px-3 border border-gray-200 rounded-lg outline-none focus:border-[#0066FF]"
                                         value={currentCampaign?.end_date?.split('T')[0] || ""}
                                         onChange={e => setCurrentCampaign({ ...currentCampaign, end_date: e.target.value })}
                                     />
@@ -291,7 +291,7 @@ export default function AdminMarketingPage() {
                                     <label className="block text-sm font-bold text-gray-700 mb-1">Prioridade</label>
                                     <input
                                         type="number"
-                                        className="w-full h-10 px-3 border border-gray-200 rounded-lg outline-none focus:border-[#C00000]"
+                                        className="w-full h-10 px-3 border border-gray-200 rounded-lg outline-none focus:border-[#0066FF]"
                                         value={currentCampaign?.priority || 0}
                                         onChange={e => setCurrentCampaign({ ...currentCampaign, priority: Number(e.target.value) })}
                                     />
@@ -300,7 +300,7 @@ export default function AdminMarketingPage() {
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input
                                             type="checkbox"
-                                            className="accent-[#C00000]"
+                                            className="accent-[#0066FF]"
                                             checked={currentCampaign?.is_active ?? true}
                                             onChange={e => setCurrentCampaign({ ...currentCampaign, is_active: e.target.checked })}
                                         />
@@ -319,7 +319,7 @@ export default function AdminMarketingPage() {
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="px-6 py-2 bg-[#C00000] text-white rounded-lg hover:bg-[#A00000] transition-colors disabled:opacity-50"
+                                    className="px-6 py-2 bg-[#0066FF] text-white rounded-lg hover:bg-[#0052CC] transition-colors disabled:opacity-50"
                                 >
                                     {saving ? "Salvando..." : "Salvar Campanha"}
                                 </button>

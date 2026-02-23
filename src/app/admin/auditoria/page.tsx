@@ -97,7 +97,7 @@ export default function AdminAuditPage() {
                         <h2 className="text-xl font-bold text-gray-900 mb-2">Tudo Limpo!</h2>
                         <p className="text-gray-500">Não há notas pendentes de auditoria no momento.</p>
                         <div className="mt-8">
-                            <Link href="/admin" className="text-[#C00000] font-medium hover:underline">Voltar ao painel</Link>
+                            <Link href="/admin" className="text-[#0066FF] font-medium hover:underline">Voltar ao painel</Link>
                         </div>
                     </div>
                 ) : (
@@ -193,7 +193,7 @@ export default function AdminAuditPage() {
                                 O que precisa ser arrumado?
                             </label>
                             <textarea
-                                className="w-full text-gray-900 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000] resize-none"
+                                className="w-full text-gray-900 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] resize-none"
                                 rows={4}
                                 placeholder="Ex: Data da nota não está legível. Por favor, envie uma foto mais nítida."
                                 value={correctionModal.feedback}
@@ -213,7 +213,7 @@ export default function AdminAuditPage() {
                             <button
                                 disabled={!correctionModal.feedback.trim() || !!actionLoading}
                                 onClick={submitCorrection}
-                                className="px-4 py-2 text-sm font-bold text-white bg-[#C00000] rounded-lg hover:bg-[#A00000] disabled:opacity-50 transition-colors flex items-center gap-2"
+                                className="px-4 py-2 text-sm font-bold text-white bg-[#0066FF] rounded-lg hover:bg-[#0052CC] disabled:opacity-50 transition-colors flex items-center gap-2"
                             >
                                 {actionLoading === correctionModal.saleId ? 'Enviando...' : 'Enviar Solicitação'}
                             </button>

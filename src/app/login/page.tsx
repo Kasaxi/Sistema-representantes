@@ -56,7 +56,7 @@ export default function LoginPage() {
                 <div className="absolute top-0 right-0 w-full h-full opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] z-0 pointer-events-none" />
 
                 <div className="relative z-10 max-w-lg text-left">
-                    <div className="w-16 h-16 bg-[#C00000] rounded-xl flex items-center justify-center shadow-lg shadow-red-900/30 mb-8">
+                    <div className="w-16 h-16 bg-[#0066FF] rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/30 mb-8">
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                     </div>
                     <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
@@ -89,7 +89,7 @@ export default function LoginPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {error && (
-                            <div className="p-4 bg-red-50 border-l-4 border-[#C00000] text-red-700 text-sm font-medium rounded-r-md">
+                            <div className="p-4 bg-blue-50 border-l-4 border-[#0066FF] text-blue-700 text-sm font-medium rounded-r-md">
                                 {error}
                             </div>
                         )}
@@ -100,7 +100,7 @@ export default function LoginPage() {
                                 type="email"
                                 required
                                 placeholder="seunome@empresa.com"
-                                className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 focus:bg-white focus:border-[#C00000] focus:ring-1 focus:ring-[#C00000] outline-none transition-all placeholder:text-gray-400"
+                                className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 focus:bg-white focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all placeholder:text-gray-400"
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             />
                         </div>
@@ -108,13 +108,13 @@ export default function LoginPage() {
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <label className="text-sm font-semibold text-gray-700">Senha</label>
-                                <Link href="#" className="text-sm text-[#C00000] font-semibold hover:underline">Esqueceu?</Link>
+                                <Link href="#" className="text-sm text-[#0066FF] font-semibold hover:underline">Esqueceu?</Link>
                             </div>
                             <input
                                 type="password"
                                 required
                                 placeholder="Sua senha segura"
-                                className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 focus:bg-white focus:border-[#C00000] focus:ring-1 focus:ring-[#C00000] outline-none transition-all placeholder:text-gray-400"
+                                className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 focus:bg-white focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all placeholder:text-gray-400"
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             />
                         </div>
@@ -122,7 +122,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-14 bg-[#C00000] hover:bg-[#A00000] text-white font-bold rounded-lg shadow-md hover:shadow-lg transition-all active:scale-[0.98] text-base flex items-center justify-center gap-2"
+                            className="w-full h-14 bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold rounded-lg shadow-md hover:shadow-lg transition-all active:scale-[0.98] text-base flex items-center justify-center gap-2"
                         >
                             {loading ? (
                                 <span>Acessando...</span>
@@ -138,7 +138,7 @@ export default function LoginPage() {
                     <div className="pt-6 border-t border-gray-100 text-center">
                         <p className="text-gray-500">
                             Não tem uma conta?{" "}
-                            <Link href="/cadastro" className="font-bold text-[#C00000] hover:text-[#A00000] transition-colors">
+                            <Link href="/cadastro" className="font-bold text-[#0066FF] hover:text-[#0052CC] transition-colors">
                                 Criar Cadastro Agora
                             </Link>
                         </p>

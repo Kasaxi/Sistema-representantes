@@ -19,6 +19,7 @@ export default function UploadSalePage() {
     const [brands, setBrands] = useState<{ id: string; name: string }[]>([]);
     const [selectedBrand, setSelectedBrand] = useState<string>("");
     const [reference, setReference] = useState<string>("");
+    const [taxCouponNumber, setTaxCouponNumber] = useState<string>("");
 
     useEffect(() => {
         async function fetchInitialData() {
@@ -77,26 +78,26 @@ export default function UploadSalePage() {
         e.preventDefault();
         setLoading(true);
         setError(null);
+
+        if (!reference || reference.trim() === "") {
+            setError("O campo 'Referência' é obrigatório.");
+            setLoading(false);
+            return;
+        }
+
+        if (!taxCouponNumber || taxCouponNumber.trim() === "") {
+            setError("O 'Número do Cupom Fiscal' é obrigatório.");
+            setLoading(false);
+            return;
+        }
+
         setUploadProgress("Otimizando imagem...");
 
         const form = e.currentTarget;
         const formData = new FormData(form);
-        // If file input is empty but we dropped a file, we need to handle that. 
-        // For simplicity in this React form, we rely on the file input being set or handled via state if strictly needed.
-        // But the native file input `onChange` sets the file in the input usually.
-        // Let's rely on standard form behavior for now but ensure dragging works if we set input ref (omitted for brevity, assume manual select or drop on input area).
-
-        // Actually, to make drop work seamlessly with FormData, we often need to manually append or use state for the file. 
-        // Let's grab file from input. If dropped, we should ideally set it to the input.
         let file = formData.get("file") as File;
 
-        // If dropped file didn't update input (browser limitation often), we might need logic. 
-        // For this MVP, let's assume user clicks to select or drag-drops correctly if implemented with Ref.
-        // To be safe for this "Emergency Redesign", I'll enforce manual selection click if drag fails, but let's try to make the input cover the area.
-
         if (!file || file.size === 0) {
-            // Check if we have a file in state if we were to implement advanced drop (not doing complex Ref logic here to keep it simple/robust)
-            // Ideally we'd use a ref to the input and set files.
             setError("Selecione uma imagem para continuar.");
             setLoading(false);
             return;
@@ -105,6 +106,18 @@ export default function UploadSalePage() {
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error("Usuário não autenticado.");
+
+            // Check for duplicate tax coupon number
+            const { data: duplicateSale, error: duplicateError } = await supabase
+                .from("sales")
+                .select("id")
+                .eq("tax_coupon_number", taxCouponNumber.trim())
+                .maybeSingle();
+
+            if (duplicateError) throw duplicateError;
+            if (duplicateSale) {
+                throw new Error("Este Número de Cupom Fiscal já foi cadastrado anteriormente.");
+            }
 
             const { data: profile } = await supabase.from("profiles").select("brand_id").eq("id", user.id).single();
             if (!profile) throw new Error("Perfil não encontrado.");
@@ -127,7 +140,8 @@ export default function UploadSalePage() {
             const { error: saleError } = await supabase.from("sales").insert({
                 seller_id: user.id,
                 brand_id: selectedBrand || profile.brand_id,
-                reference: reference || null,
+                reference: reference,
+                tax_coupon_number: taxCouponNumber.trim(),
                 invoice_photo_url: uploadData.path,
                 status: "pending",
             });
@@ -157,7 +171,7 @@ export default function UploadSalePage() {
                     <form onSubmit={handleSubmit} className="p-8">
 
                         {error && (
-                            <div className="mb-6 p-4 bg-red-50 border-l-4 border-[#C00000] text-red-700 text-sm font-medium rounded-r">
+                            <div className="mb-6 p-4 bg-blue-50 border-l-4 border-[#0066FF] text-blue-700 text-sm font-medium rounded-r">
                                 {error}
                             </div>
                         )}
@@ -166,7 +180,7 @@ export default function UploadSalePage() {
                             {/* Upload Area */}
                             <div
                                 className={`relative group border-2 border-dashed rounded-2xl transition-all h-80 flex flex-col items-center justify-center text-center
-                                    ${dragActive ? 'border-[#C00000] bg-red-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}
+                                    ${dragActive ? 'border-[#0066FF] bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}
                                     ${preview ? 'border-solid border-gray-200 p-4' : 'p-12'}
                                 `}
                                 onDragEnter={handleDrag}
@@ -191,7 +205,7 @@ export default function UploadSalePage() {
                                     </div>
                                 ) : (
                                     <div className="space-y-4 pointer-events-none">
-                                        <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto transition-colors ${dragActive ? 'bg-white text-[#C00000]' : 'bg-gray-100 text-gray-400 group-hover:bg-white group-hover:shadow-md'}`}>
+                                        <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto transition-colors ${dragActive ? 'bg-white text-[#0066FF]' : 'bg-gray-100 text-gray-400 group-hover:bg-white group-hover:shadow-md'}`}>
                                             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
                                         </div>
                                         <div>
@@ -207,13 +221,13 @@ export default function UploadSalePage() {
 
                             {/* New Fields: Brand and Reference */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
+                                <div className="md:col-span-2">
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Marca Vendida</label>
                                     <select
                                         required
                                         value={selectedBrand}
                                         onChange={(e) => setSelectedBrand(e.target.value)}
-                                        className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000] appearance-none bg-white transition-all text-gray-900"
+                                        className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] appearance-none bg-white transition-all text-gray-900"
                                     >
                                         <option value="" disabled>Selecione a marca</option>
                                         {brands.map(brand => (
@@ -223,13 +237,26 @@ export default function UploadSalePage() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">Referência (Opcional)</label>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Número do Cupom Fiscal</label>
                                     <input
                                         type="text"
+                                        required
+                                        value={taxCouponNumber}
+                                        onChange={(e) => setTaxCouponNumber(e.target.value)}
+                                        placeholder="Ex: 000123"
+                                        className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] bg-white transition-all text-gray-900"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Referência</label>
+                                    <input
+                                        type="text"
+                                        required
                                         value={reference}
                                         onChange={(e) => setReference(e.target.value)}
                                         placeholder="Ex: REF-12345"
-                                        className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000] bg-white transition-all text-gray-900"
+                                        className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] bg-white transition-all text-gray-900"
                                     />
                                 </div>
                             </div>
@@ -263,7 +290,7 @@ export default function UploadSalePage() {
                                 disabled={loading || !preview}
                                 className={`
                                     px-8 py-3 rounded-xl font-bold text-white shadow-lg transition-all flex items-center gap-2
-                                    ${loading || !preview ? 'bg-gray-300 cursor-not-allowed shadow-none' : 'bg-[#C00000] hover:bg-[#A00000] hover:shadow-red-900/20 active:translate-y-0.5'}
+                                    ${loading || !preview ? 'bg-gray-300 cursor-not-allowed shadow-none' : 'bg-[#0066FF] hover:bg-[#0052CC] hover:shadow-blue-900/20 active:translate-y-0.5'}
                                 `}
                             >
                                 {loading ? (

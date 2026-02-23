@@ -29,19 +29,19 @@ export default function PendingApproval() {
 
             <div className="mb-8 text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                    <div className="w-10 h-10 bg-[#C00000] rounded-xl flex items-center justify-center shadow-lg shadow-red-900/20">
+                    <div className="w-10 h-10 bg-[#0066FF] rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/20">
                         <span className="text-white font-bold text-xl">O</span>
                     </div>
-                    <span className="text-2xl font-bold tracking-tight text-gray-900">OptiSales<span className="text-[#C00000]">.</span></span>
+                    <span className="text-2xl font-bold tracking-tight text-gray-900">OptiSales<span className="text-[#0066FF]">.</span></span>
                 </div>
             </div>
 
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-10 max-w-md w-full text-center relative overflow-hidden">
                 {/* Decorative background element */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#C00000] opacity-5 rounded-full -mr-16 -mt-16 blur-xl pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#0066FF] opacity-5 rounded-full -mr-16 -mt-16 blur-xl pointer-events-none"></div>
 
                 <div className="w-20 h-20 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-6 relative">
-                    <div className="absolute inset-0 rounded-full border-4 border-yellow-100 border-t-[#C00000] animate-spin"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-yellow-100 border-t-[#0066FF] animate-spin"></div>
                     <svg className="w-10 h-10 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 </div>
 
@@ -72,7 +72,7 @@ export default function PendingApproval() {
             </div>
 
             <p className="mt-8 text-xs text-gray-400 font-medium">
-                © 2026 Techno-Optic Group • Precisa de ajuda? <a href="#" className="text-[#C00000] hover:underline">Entre em contato</a>
+                © 2026 Techno-Optic Group • Precisa de ajuda? <a href="#" className="text-[#0066FF] hover:underline">Entre em contato</a>
             </p>
         </div>
     );

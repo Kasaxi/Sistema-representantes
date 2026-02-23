@@ -9,7 +9,17 @@ interface RankingItem {
     sales_count: number;
 }
 
-export default function RealtimeRanking({ brandId }: { brandId?: string | null }) {
+export default function RealtimeRanking({
+    brandId,
+    startDate,
+    endDate,
+    sellerId
+}: {
+    brandId?: string | null,
+    startDate?: string,
+    endDate?: string,
+    sellerId?: string
+}) {
     const [ranking, setRanking] = useState<RankingItem[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -23,9 +33,22 @@ export default function RealtimeRanking({ brandId }: { brandId?: string | null }
             `)
             .eq("status", "approved");
 
-        // Only filter by brand if a valid ID is provided
+        // Brand Filter
         if (brandId && brandId !== "null") {
             query = query.eq("brand_id", brandId);
+        }
+
+        // Date Filters
+        if (startDate) {
+            query = query.gte("created_at", `${startDate}T00:00:00`);
+        }
+        if (endDate) {
+            query = query.lte("created_at", `${endDate}T23:59:59`);
+        }
+
+        // Seller Filter
+        if (sellerId && sellerId !== "all") {
+            query = query.eq("seller_id", sellerId);
         }
 
         const { data, error } = await query;
@@ -75,7 +98,7 @@ export default function RealtimeRanking({ brandId }: { brandId?: string | null }
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [brandId]);
+    }, [brandId, startDate, endDate, sellerId]);
 
     if (loading) return (
         <div className="space-y-3">

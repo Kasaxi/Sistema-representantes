@@ -128,7 +128,7 @@ export default function AdminMarcasPage() {
                                         <td className="p-4 text-right">
                                             <button
                                                 onClick={() => handleEditClick(brand)}
-                                                className="px-3 py-1 bg-[#C00000]/10 text-[#C00000] text-xs font-bold rounded-lg hover:bg-[#C00000]/20 transition-colors"
+                                                className="px-3 py-1 bg-[#0066FF]/10 text-[#0066FF] text-xs font-bold rounded-lg hover:bg-[#0066FF]/20 transition-colors"
                                             >
                                                 Configurar
                                             </button>
@@ -156,19 +156,19 @@ export default function AdminMarcasPage() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Comissão Base (R$)</label>
                                     <input
                                         type="number" step="0.01" min="0" required
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                                         value={formData.commission_value}
                                         onChange={e => setFormData({ ...formData, commission_value: e.target.value === "" ? "" : parseFloat(e.target.value) })}
                                     />
                                 </div>
                                 <div className="border-t border-gray-100 pt-4 mt-4">
-                                    <h3 className="text-md font-bold text-gray-900 mb-3 text-[#C00000]">Periodo Promocional (Opcional)</h3>
+                                    <h3 className="text-md font-bold text-gray-900 mb-3 text-[#0066FF]">Periodo Promocional (Opcional)</h3>
 
                                     <div className="grid grid-cols-2 gap-4 mb-3">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Promoção</label>
                                             <select
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000]"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF]"
                                                 value={formData.promo_type}
                                                 onChange={e => setFormData({ ...formData, promo_type: e.target.value as any })}
                                             >
@@ -182,7 +182,7 @@ export default function AdminMarcasPage() {
                                             <input
                                                 type="number" step="0.01" min="0"
                                                 disabled={!formData.promo_type}
-                                                className={`w-full px-3 py-2 border rounded-lg focus:ring-[#C00000] ${!formData.promo_type ? 'bg-gray-100 border-gray-200' : 'border-gray-300'}`}
+                                                className={`w-full px-3 py-2 border rounded-lg focus:ring-[#0066FF] ${!formData.promo_type ? 'bg-gray-100 border-gray-200' : 'border-gray-300'}`}
                                                 value={formData.promo_value}
                                                 onChange={e => setFormData({ ...formData, promo_value: e.target.value === "" ? "" : parseFloat(e.target.value) })}
                                             />
@@ -195,7 +195,7 @@ export default function AdminMarcasPage() {
                                             <input
                                                 type="datetime-local"
                                                 disabled={!formData.promo_type}
-                                                className={`w-full px-3 py-2 border rounded-lg focus:ring-[#C00000] ${!formData.promo_type ? 'bg-gray-100 border-gray-200' : 'border-gray-300'}`}
+                                                className={`w-full px-3 py-2 border rounded-lg focus:ring-[#0066FF] ${!formData.promo_type ? 'bg-gray-100 border-gray-200' : 'border-gray-300'}`}
                                                 value={formData.promo_start_date}
                                                 onChange={e => setFormData({ ...formData, promo_start_date: e.target.value })}
                                             />
@@ -205,7 +205,7 @@ export default function AdminMarcasPage() {
                                             <input
                                                 type="datetime-local"
                                                 disabled={!formData.promo_type}
-                                                className={`w-full px-3 py-2 border rounded-lg focus:ring-[#C00000] ${!formData.promo_type ? 'bg-gray-100 border-gray-200' : 'border-gray-300'}`}
+                                                className={`w-full px-3 py-2 border rounded-lg focus:ring-[#0066FF] ${!formData.promo_type ? 'bg-gray-100 border-gray-200' : 'border-gray-300'}`}
                                                 value={formData.promo_end_date}
                                                 onChange={e => setFormData({ ...formData, promo_end_date: e.target.value })}
                                             />
@@ -222,7 +222,7 @@ export default function AdminMarcasPage() {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex-1 px-4 py-2 bg-[#C00000] text-white rounded-lg hover:bg-[#A00000] font-bold shadow"
+                                        className="flex-1 px-4 py-2 bg-[#0066FF] text-white rounded-lg hover:bg-[#0052CC] font-bold shadow"
                                     >
                                         Aplicar
                                     </button>

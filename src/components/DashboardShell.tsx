@@ -78,11 +78,11 @@ export default function DashboardShell({ children, userRole = "representative" }
                     <div className={`flex items-center ${isCollapsed ? 'justify-center mb-8' : 'justify-between mb-8'}`}>
                         {/* Logo */}
                         <div className="flex items-center gap-2">
-                            <div className={`bg-[#C00000] rounded-lg flex items-center justify-center transition-all ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'}`}>
+                            <div className={`bg-[#0066FF] rounded-lg flex items-center justify-center transition-all ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'}`}>
                                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                             </div>
                             {!isCollapsed && (
-                                <span className="text-xl font-bold tracking-tight text-gray-900 animate-in fade-in duration-200">OptiSales<span className="text-[#C00000]">.</span></span>
+                                <span className="text-xl font-bold tracking-tight text-gray-900 animate-in fade-in duration-200">OptiSales<span className="text-[#0066FF]">.</span></span>
                             )}
                         </div>
 
@@ -96,7 +96,7 @@ export default function DashboardShell({ children, userRole = "representative" }
 
                     {/* Collapsed Toggle (Centered) */}
                     {isCollapsed && (
-                        <button onClick={() => setIsCollapsed(false)} className="mb-6 p-2 text-gray-400 hover:text-[#C00000] hover:bg-red-50 rounded-lg transition-colors">
+                        <button onClick={() => setIsCollapsed(false)} className="mb-6 p-2 text-gray-400 hover:text-[#0066FF] hover:bg-blue-50 rounded-lg transition-colors">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
                         </button>
                     )}
@@ -106,10 +106,10 @@ export default function DashboardShell({ children, userRole = "representative" }
                         <div className="px-4 py-3 bg-gray-50 rounded-xl border border-gray-100 mb-6 animate-in fade-in duration-200">
                             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Logado como</p>
                             <p className="font-semibold text-sm truncate">{userProfile?.full_name || "Carregando..."}</p>
-                            <p className="text-xs text-[#C00000] font-medium capitalize">{userRole === 'admin' ? 'Administrador' : 'Representante'}</p>
+                            <p className="text-xs text-[#0066FF] font-medium capitalize">{userRole === 'admin' ? 'Administrador' : 'Representante'}</p>
                         </div>
                     ) : (
-                        <div className="mb-6 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#C00000] font-bold text-xs border border-gray-200" title={userProfile?.full_name}>
+                        <div className="mb-6 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#0066FF] font-bold text-xs border border-gray-200" title={userProfile?.full_name}>
                             {userProfile?.full_name?.charAt(0) || "U"}
                         </div>
                     )}
@@ -124,7 +124,7 @@ export default function DashboardShell({ children, userRole = "representative" }
                                 href={item.href}
                                 title={isCollapsed ? item.name : ""}
                                 className={`flex items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${isActive
-                                    ? "bg-[#C00000] text-white shadow-md shadow-red-900/20"
+                                    ? "bg-[#0066FF] text-white shadow-md shadow-blue-900/20"
                                     : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                                     }`}
                             >
@@ -154,7 +154,7 @@ export default function DashboardShell({ children, userRole = "representative" }
                     <button
                         onClick={handleSignOut}
                         title={isCollapsed ? "Sair do Sistema" : ""}
-                        className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-4 py-3 w-full rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors`}
+                        className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-4 py-3 w-full rounded-xl text-sm font-medium text-gray-500 hover:bg-blue-50 hover:text-[#0066FF] transition-colors`}
                     >
                         <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                         {!isCollapsed && <span className="animate-in fade-in duration-200">Sair do Sistema</span>}
@@ -164,7 +164,7 @@ export default function DashboardShell({ children, userRole = "representative" }
 
             {/* MOBILE HEADER */}
             <div className="lg:hidden w-full fixed top-0 bg-white border-b border-gray-100 z-50 px-4 py-3 flex items-center justify-between">
-                <div className="w-8 h-8 bg-[#C00000] rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-[#0066FF] rounded-lg flex items-center justify-center">
                     <span className="text-white font-bold">O</span>
                 </div>
                 <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-gray-600">

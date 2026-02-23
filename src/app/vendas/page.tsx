@@ -165,7 +165,7 @@ export default function MySalesPage() {
                             <input
                                 type="text"
                                 placeholder="Buscar marca ou referência..."
-                                className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000] transition-all"
+                                className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] transition-all"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -173,7 +173,7 @@ export default function MySalesPage() {
                         </div>
                         <Link
                             href="/enviar-nota"
-                            className="bg-[#C00000] hover:bg-[#A00000] text-white px-4 py-2 rounded-lg font-medium shadow-lg shadow-red-900/10 flex items-center gap-2 transition-all hover:-translate-y-0.5"
+                            className="bg-[#0066FF] hover:bg-[#0052CC] text-white px-4 py-2 rounded-lg font-medium shadow-lg shadow-blue-900/10 flex items-center gap-2 transition-all hover:-translate-y-0.5"
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
                             Nova Nota
@@ -200,7 +200,7 @@ export default function MySalesPage() {
                                     <tr key={sale.id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="px-6 py-4">
                                             <a href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/notas-fiscais/${sale.invoice_photo_url}`} target="_blank" rel="noopener noreferrer">
-                                                <div className="w-12 h-16 bg-gray-100 rounded flex items-center justify-center overflow-hidden border border-gray-200 hover:border-[#C00000] transition-colors">
+                                                <div className="w-12 h-16 bg-gray-100 rounded flex items-center justify-center overflow-hidden border border-gray-200 hover:border-[#0066FF] transition-colors">
                                                     <img src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/notas-fiscais/${sale.invoice_photo_url}`} className="w-full h-full object-cover" alt="Nota Fiscal" />
                                                 </div>
                                             </a>
@@ -295,7 +295,7 @@ export default function MySalesPage() {
                                     type="text"
                                     value={correctionModal.newReference}
                                     onChange={(e) => setCorrectionModal(prev => ({ ...prev, newReference: e.target.value }))}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-[#C00000] focus:border-[#C00000] outline-none shadow-sm transition-all"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-[#0066FF] focus:border-[#0066FF] outline-none shadow-sm transition-all"
                                     placeholder="Digite a nova referência (ou deixe igual)"
                                 />
                                 <p className="text-xs text-gray-500 mt-2">Altere apenas se estiver incorreta.</p>
@@ -306,7 +306,7 @@ export default function MySalesPage() {
                                 <label className="block text-sm font-bold text-gray-700 mb-2">Enviar Nova Foto da Nota</label>
 
                                 <label className={`block w-full border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${correctionModal.previewUrl
-                                    ? 'border-[#C00000] bg-red-50/50 hover:bg-red-50'
+                                    ? 'border-[#0066FF] bg-blue-50/50 hover:bg-blue-50'
                                     : 'border-gray-300 hover:bg-gray-50'
                                     }`}>
                                     <input
@@ -320,7 +320,7 @@ export default function MySalesPage() {
                                             <div className="bg-white p-2 rounded-xl shadow-sm mx-auto max-w-[200px] border border-gray-100">
                                                 <img src={correctionModal.previewUrl} alt="Preview" className="w-full h-auto object-contain rounded-lg" />
                                             </div>
-                                            <p className="text-sm text-[#C00000] font-bold">✓ Imagem confirmada. Clique para trocar.</p>
+                                            <p className="text-sm text-[#0066FF] font-bold">✓ Imagem confirmada. Clique para trocar.</p>
                                         </div>
                                     ) : (
                                         <div className="space-y-2 py-4">
@@ -328,7 +328,7 @@ export default function MySalesPage() {
                                                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                             </div>
                                             <div className="text-sm">
-                                                <span className="text-[#C00000] font-bold">Clique para selecionar</span> a nova nota
+                                                <span className="text-[#0066FF] font-bold">Clique para selecionar</span> a nova nota
                                             </div>
                                             <p className="text-xs text-gray-500">Apenas arquivos de imagem</p>
                                         </div>
@@ -354,7 +354,7 @@ export default function MySalesPage() {
                             <button
                                 onClick={submitCorrection}
                                 disabled={correctionModal.submitting || !correctionModal.newFile}
-                                className="px-5 py-2.5 bg-[#C00000] hover:bg-[#A00000] text-white text-sm font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                                className="px-5 py-2.5 bg-[#0066FF] hover:bg-[#0052CC] text-white text-sm font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                             >
                                 {correctionModal.submitting ? 'Enviando...' : 'Reenviar Nota'}
                             </button>

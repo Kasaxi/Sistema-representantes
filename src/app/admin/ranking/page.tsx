@@ -103,7 +103,7 @@ export default function AdminRankingPage() {
                         <select
                             value={filters.brandId}
                             onChange={(e) => setFilters({ ...filters, brandId: e.target.value })}
-                            className="w-full bg-gray-50 border-gray-200 text-gray-900 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                            className="w-full bg-gray-50 border-gray-200 text-gray-900 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                         >
                             <option value="all">Todas as Marcas</option>
                             {brands.map(brand => (
@@ -116,7 +116,7 @@ export default function AdminRankingPage() {
                         <select
                             value={filters.period}
                             onChange={(e) => setFilters({ ...filters, period: e.target.value })}
-                            className="w-full bg-gray-50 border-gray-200 text-gray-900 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                            className="w-full bg-gray-50 border-gray-200 text-gray-900 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                         >
                             <option value="current_month">Mês Atual</option>
                             <option value="last_30_days">Últimos 30 Dias</option>
@@ -129,7 +129,7 @@ export default function AdminRankingPage() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     {loading ? (
                         <div className="p-12 text-center">
-                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#C00000]"></div>
+                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#0066FF]"></div>
                             <p className="mt-4 text-gray-400 text-sm font-medium">Calculando posições...</p>
                         </div>
                     ) : ranking.length === 0 ? (

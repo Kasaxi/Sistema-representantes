@@ -133,7 +133,7 @@ export default function AdminOpticsPage() {
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-600">{optic.cnpj}</td>
                                     <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${optic.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${optic.active ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
                                             {optic.active ? 'Ativa' : 'Inativa'}
                                         </span>
                                     </td>
@@ -165,7 +165,7 @@ export default function AdminOpticsPage() {
                                     <input
                                         required
                                         type="text"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                                         value={formData.corporate_name}
                                         onChange={e => setFormData({ ...formData, corporate_name: e.target.value })}
                                         placeholder="Ex: Ótica Visão Ltda"
@@ -175,7 +175,7 @@ export default function AdminOpticsPage() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Nome Fantasia (Opcional)</label>
                                     <input
                                         type="text"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                                         value={formData.trade_name}
                                         onChange={e => setFormData({ ...formData, trade_name: e.target.value })}
                                         placeholder="Ex: Ótica Visão"
@@ -186,7 +186,7 @@ export default function AdminOpticsPage() {
                                     <input
                                         required
                                         type="text"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                                         value={formData.cnpj}
                                         onChange={e => setFormData({ ...formData, cnpj: e.target.value })}
                                         placeholder="00.000.000/0000-00"
@@ -198,7 +198,7 @@ export default function AdminOpticsPage() {
                                         <input
                                             required
                                             type="text"
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                                             value={formData.city}
                                             onChange={e => setFormData({ ...formData, city: e.target.value })}
                                             placeholder="Ex: São Paulo"
@@ -210,7 +210,7 @@ export default function AdminOpticsPage() {
                                             required
                                             type="text"
                                             maxLength={2}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000] uppercase"
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF] uppercase"
                                             value={formData.state}
                                             onChange={e => setFormData({ ...formData, state: e.target.value.toUpperCase() })}
                                             placeholder="Ex: SP"
@@ -227,7 +227,7 @@ export default function AdminOpticsPage() {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex-1 px-4 py-2 bg-[#C00000] text-white rounded-lg hover:bg-[#A00000] font-bold"
+                                        className="flex-1 px-4 py-2 bg-[#0066FF] text-white rounded-lg hover:bg-[#0052CC] font-bold"
                                     >
                                         Salvar
                                     </button>

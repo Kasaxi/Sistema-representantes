@@ -12,7 +12,11 @@ export default function ProfilePage() {
     const [formData, setFormData] = useState({
         full_name: "",
         cpf: "",
+        reimbursementForm: "pix" as "pix" | "bank",
         pix_key: "",
+        bank_name: "",
+        bank_agency: "",
+        bank_account: "",
         email: "",
         password: "",
     });
@@ -28,14 +32,18 @@ export default function ProfilePage() {
         if (user) {
             const { data: profile } = await supabase
                 .from("profiles")
-                .select("full_name, cpf, pix_key")
+                .select("full_name, cpf, pix_key, chave_pix, reimbursement_form, bank_name, bank_agency, bank_account")
                 .eq("id", user.id)
                 .single();
 
             setFormData({
                 full_name: profile?.full_name || "",
                 cpf: profile?.cpf || "",
-                pix_key: profile?.pix_key || "",
+                reimbursementForm: (profile?.reimbursement_form as "pix" | "bank") || "pix",
+                pix_key: profile?.chave_pix || profile?.pix_key || "",
+                bank_name: profile?.bank_name || "",
+                bank_agency: profile?.bank_agency || "",
+                bank_account: profile?.bank_account || "",
                 email: user.email || "",
                 password: "", // Não buscamos a senha
             });
@@ -57,7 +65,12 @@ export default function ProfilePage() {
                 .update({
                     full_name: formData.full_name,
                     cpf: formData.cpf.replace(/\D/g, ""),
-                    pix_key: formData.pix_key
+                    reimbursement_form: formData.reimbursementForm,
+                    pix_key: formData.reimbursementForm === "pix" ? formData.pix_key : null,
+                    chave_pix: formData.reimbursementForm === "pix" ? formData.pix_key : null,
+                    bank_name: formData.reimbursementForm === "bank" ? formData.bank_name : null,
+                    bank_agency: formData.reimbursementForm === "bank" ? formData.bank_agency : null,
+                    bank_account: formData.reimbursementForm === "bank" ? formData.bank_account : null,
                 })
                 .eq("id", user.id);
 
@@ -94,7 +107,7 @@ export default function ProfilePage() {
         return (
             <DashboardShell userRole="representative">
                 <div className="flex items-center justify-center h-64">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C00000]"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0066FF]"></div>
                 </div>
             </DashboardShell>
         );
@@ -120,7 +133,7 @@ export default function ProfilePage() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
                                     <input
                                         type="text" required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                                         value={formData.full_name}
                                         onChange={e => setFormData({ ...formData, full_name: e.target.value })}
                                         placeholder="Seu nome completo"
@@ -130,21 +143,68 @@ export default function ProfilePage() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">CPF</label>
                                     <input
                                         type="text" required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                                         value={formData.cpf}
                                         onChange={e => setFormData({ ...formData, cpf: e.target.value })}
                                         placeholder="000.000.000-00"
                                     />
                                 </div>
-                                <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Chave PIX (Para Recebimentos)</label>
-                                    <input
-                                        type="text"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
-                                        value={formData.pix_key}
-                                        onChange={e => setFormData({ ...formData, pix_key: e.target.value })}
-                                        placeholder="Telefone, E-mail, CPF ou Chave Aleatória"
-                                    />
+                                <div className="md:col-span-2 space-y-4">
+                                    <label className="block text-sm font-medium text-gray-700">Forma de Recebimento</label>
+                                    <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, reimbursementForm: "pix" })}
+                                            className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${formData.reimbursementForm === 'pix' ? 'bg-white text-[#0066FF] shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
+                                        >
+                                            PIX
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, reimbursementForm: "bank" })}
+                                            className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${formData.reimbursementForm === 'bank' ? 'bg-white text-[#0066FF] shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
+                                        >
+                                            CONTA BANCÁRIA
+                                        </button>
+                                    </div>
+
+                                    {formData.reimbursementForm === 'pix' ? (
+                                        <div className="animate-in fade-in slide-in-from-top-1">
+                                            <input
+                                                type="text"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
+                                                value={formData.pix_key}
+                                                onChange={e => setFormData({ ...formData, pix_key: e.target.value })}
+                                                placeholder="Telefone, E-mail, CPF ou Chave Aleatória"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-in fade-in slide-in-from-top-1">
+                                            <div className="md:col-span-3">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Nome do Banco"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
+                                                    value={formData.bank_name}
+                                                    onChange={e => setFormData({ ...formData, bank_name: e.target.value })}
+                                                />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                placeholder="Agência"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
+                                                value={formData.bank_agency}
+                                                onChange={e => setFormData({ ...formData, bank_agency: e.target.value })}
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Número da Conta"
+                                                className="md:col-span-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                                                value={formData.bank_account}
+                                                onChange={e => setFormData({ ...formData, bank_account: e.target.value })}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -157,7 +217,7 @@ export default function ProfilePage() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
                                     <input
                                         type="email" required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                                         value={formData.email}
                                         onChange={e => setFormData({ ...formData, email: e.target.value })}
                                     />
@@ -166,7 +226,7 @@ export default function ProfilePage() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Nova Senha</label>
                                     <input
                                         type="password"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                                         value={formData.password}
                                         onChange={e => setFormData({ ...formData, password: e.target.value })}
                                         placeholder="Deixe em branco para não alterar"
@@ -179,7 +239,7 @@ export default function ProfilePage() {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="px-6 py-3 bg-[#C00000] text-white font-bold rounded-lg hover:bg-[#A00000] shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+                                className="px-6 py-3 bg-[#0066FF] text-white font-bold rounded-lg hover:bg-[#0052CC] shadow-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
                             >
                                 {saving ? (
                                     <>

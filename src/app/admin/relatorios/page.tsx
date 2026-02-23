@@ -101,9 +101,9 @@ export default function AdminReportsPage() {
                         <p className="text-sm font-medium text-yellow-600">Em Análise</p>
                         <p className="text-3xl font-bold text-yellow-700 mt-2">{stats.pending}</p>
                     </div>
-                    <div className="bg-red-50 p-6 rounded-xl border border-red-100 shadow-sm">
-                        <p className="text-sm font-medium text-red-600">Recusadas</p>
-                        <p className="text-3xl font-bold text-red-700 mt-2">{stats.rejected}</p>
+                    <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 shadow-sm">
+                        <p className="text-sm font-medium text-blue-600">Recusadas</p>
+                        <p className="text-3xl font-bold text-blue-700 mt-2">{stats.rejected}</p>
                     </div>
                 </div>
 
@@ -188,7 +188,7 @@ export default function AdminReportsPage() {
                                         <td className="px-6 py-4 text-right">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide
                                                 ${sale.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                                    sale.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                    sale.status === 'rejected' ? 'bg-blue-100 text-blue-700' :
                                                         'bg-yellow-100 text-yellow-700'
                                                 }`}>
                                                 {sale.status === 'approved' ? 'Aprovado' :

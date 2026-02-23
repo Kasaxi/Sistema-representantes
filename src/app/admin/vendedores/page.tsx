@@ -103,7 +103,7 @@ export default function AdminSellersPage() {
                         <input
                             type="text"
                             placeholder="Buscar por nome ou ótica..."
-                            className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000] transition-all"
+                            className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] transition-all"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />

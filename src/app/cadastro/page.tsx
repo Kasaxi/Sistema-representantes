@@ -26,7 +26,11 @@ export default function CadastroPage() {
         password: "",
         nomeOtica: "",
         cnpj: "",
+        reimbursementForm: "pix" as "pix" | "bank",
         chavePix: "",
+        bankName: "",
+        bankAgency: "",
+        bankAccount: "",
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -62,7 +66,12 @@ export default function CadastroPage() {
                         brand_id: null, // Todos vendem todas as marcas
                         optic_name: formData.nomeOtica, // Maps to optic_name
                         cnpj: formData.cnpj.replace(/\D/g, ""), // Remove formatação
-                        chave_pix: formData.chavePix, // Added column
+                        reimbursement_form: formData.reimbursementForm,
+                        chave_pix: formData.reimbursementForm === "pix" ? formData.chavePix : null,
+                        pix_key: formData.reimbursementForm === "pix" ? formData.chavePix : null, // Consistent with other places that might use pix_key
+                        bank_name: formData.reimbursementForm === "bank" ? formData.bankName : null,
+                        bank_agency: formData.reimbursementForm === "bank" ? formData.bankAgency : null,
+                        bank_account: formData.reimbursementForm === "bank" ? formData.bankAccount : null,
                     },
                 ]);
 
@@ -108,7 +117,7 @@ export default function CadastroPage() {
 
             {/* Header Container */}
             <div className="max-w-5xl mx-auto mb-10 text-center">
-                <Link href="/login" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-[#C00000] mb-6 transition-colors">
+                <Link href="/login" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-[#0066FF] mb-6 transition-colors">
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     Voltar para Login
                 </Link>
@@ -124,7 +133,7 @@ export default function CadastroPage() {
                 {/* Stepper Header */}
                 <div className="bg-gray-50 border-b border-gray-100 px-8 py-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-[#C00000] text-white flex items-center justify-center font-bold text-sm">1</div>
+                        <div className="w-8 h-8 rounded-full bg-[#0066FF] text-white flex items-center justify-center font-bold text-sm">1</div>
                         <span className="font-semibold text-gray-900">Dados Pessoais</span>
                         <div className="w-12 h-px bg-gray-300 mx-2"></div>
                         <div className="w-8 h-8 rounded-full bg-white border-2 border-gray-300 text-gray-500 flex items-center justify-center font-bold text-sm">2</div>
@@ -137,7 +146,7 @@ export default function CadastroPage() {
 
                 <form onSubmit={handleSubmit} className="p-8 md:p-12 lg:p-14">
                     {error && (
-                        <div className="mb-8 p-4 bg-red-50 border-l-4 border-[#C00000] text-red-700 text-sm font-medium rounded-r-md">
+                        <div className="mb-8 p-4 bg-blue-50 border-l-4 border-[#0066FF] text-blue-700 text-sm font-medium rounded-r-md">
                             {error}
                         </div>
                     )}
@@ -154,22 +163,22 @@ export default function CadastroPage() {
                             <div className="space-y-6">
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-gray-700">Nome Completo</label>
-                                    <input required type="text" placeholder="Ex: João da Silva" className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#C00000] focus:ring-1 focus:ring-[#C00000] outline-none transition-all placeholder:text-gray-300" onChange={(e) => setFormData({ ...formData, nome: e.target.value })} />
+                                    <input required type="text" placeholder="Ex: João da Silva" className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all placeholder:text-gray-300" onChange={(e) => setFormData({ ...formData, nome: e.target.value })} />
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-gray-700">CPF</label>
-                                    <input required type="text" placeholder="000.000.000-00" className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#C00000] focus:ring-1 focus:ring-[#C00000] outline-none transition-all placeholder:text-gray-300" onChange={(e) => setFormData({ ...formData, cpf: e.target.value })} />
+                                    <input required type="text" placeholder="000.000.000-00" className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all placeholder:text-gray-300" onChange={(e) => setFormData({ ...formData, cpf: e.target.value })} />
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-gray-700">E-mail</label>
-                                    <input required type="email" placeholder="seu@email.com" className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#C00000] focus:ring-1 focus:ring-[#C00000] outline-none transition-all placeholder:text-gray-300" onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                                    <input required type="email" placeholder="seu@email.com" className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all placeholder:text-gray-300" onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-gray-700">Senha</label>
-                                    <input required type="password" placeholder="Mínimo 8 caracteres" className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#C00000] focus:ring-1 focus:ring-[#C00000] outline-none transition-all placeholder:text-gray-300" onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+                                    <input required type="password" placeholder="Mínimo 8 caracteres" className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all placeholder:text-gray-300" onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
                                 </div>
                             </div>
                         </div>
@@ -188,7 +197,7 @@ export default function CadastroPage() {
                                     <label className="text-sm font-bold text-gray-700">Sua Ótica</label>
                                     <select
                                         required
-                                        className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#C00000] focus:ring-1 focus:ring-[#C00000] outline-none transition-all text-gray-700"
+                                        className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all text-gray-700"
                                         onChange={(e) => {
                                             const selectedOptic = optics.find(o => o.id === e.target.value);
                                             if (selectedOptic) {
@@ -225,9 +234,76 @@ export default function CadastroPage() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Chave PIX (Para Pagamentos)</label>
-                                    <input required type="text" placeholder="CPF, E-mail ou Telefone" className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#C00000] focus:ring-1 focus:ring-[#C00000] outline-none transition-all placeholder:text-gray-300" onChange={(e) => setFormData({ ...formData, chavePix: e.target.value })} />
+                                <div className="space-y-4">
+                                    <label className="text-sm font-bold text-gray-700">Forma de Recebimento</label>
+                                    <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100 gap-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, reimbursementForm: "pix" })}
+                                            className={`flex-1 py-3 rounded-lg text-sm font-bold transition-all ${formData.reimbursementForm === 'pix' ? 'bg-white text-[#0066FF] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                        >
+                                            PIX
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, reimbursementForm: "bank" })}
+                                            className={`flex-1 py-3 rounded-lg text-sm font-bold transition-all ${formData.reimbursementForm === 'bank' ? 'bg-white text-[#0066FF] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                        >
+                                            Conta Bancária
+                                        </button>
+                                    </div>
+
+                                    {formData.reimbursementForm === 'pix' ? (
+                                        <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                                            <label className="text-sm font-bold text-gray-700">Chave PIX</label>
+                                            <input
+                                                required={formData.reimbursementForm === 'pix'}
+                                                type="text"
+                                                placeholder="CPF, E-mail, Telefone ou Chave Aleatória"
+                                                className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all placeholder:text-gray-300"
+                                                value={formData.chavePix}
+                                                onChange={(e) => setFormData({ ...formData, chavePix: e.target.value })}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-bold text-gray-700">Banco</label>
+                                                <input
+                                                    required={formData.reimbursementForm === 'bank'}
+                                                    type="text"
+                                                    placeholder="Ex: Banco do Brasil"
+                                                    className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all placeholder:text-gray-300"
+                                                    value={formData.bankName}
+                                                    onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <label className="text-sm font-bold text-gray-700">Agência</label>
+                                                    <input
+                                                        required={formData.reimbursementForm === 'bank'}
+                                                        type="text"
+                                                        placeholder="0001"
+                                                        className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all placeholder:text-gray-300"
+                                                        value={formData.bankAgency}
+                                                        onChange={(e) => setFormData({ ...formData, bankAgency: e.target.value })}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-sm font-bold text-gray-700">Conta</label>
+                                                    <input
+                                                        required={formData.reimbursementForm === 'bank'}
+                                                        type="text"
+                                                        placeholder="12345-6"
+                                                        className="w-full h-12 px-4 bg-white border border-gray-200 rounded-lg focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] outline-none transition-all placeholder:text-gray-300"
+                                                        value={formData.bankAccount}
+                                                        onChange={(e) => setFormData({ ...formData, bankAccount: e.target.value })}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -240,7 +316,7 @@ export default function CadastroPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full md:w-auto px-10 h-14 bg-[#C00000] hover:bg-[#A00000] text-white font-bold rounded-xl shadow-lg shadow-red-900/10 transition-all hover:-translate-y-0.5"
+                            className="w-full md:w-auto px-10 h-14 bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold rounded-xl shadow-lg shadow-blue-900/10 transition-all hover:-translate-y-0.5"
                         >
                             {loading ? "Processando..." : "Finalizar Cadastro →"}
                         </button>

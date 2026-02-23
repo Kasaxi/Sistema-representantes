@@ -38,7 +38,12 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
         optic_name: "",
         brand_id: "",
         status: "",
-        role: "seller" // Default, but will be overwritten
+        role: "seller", // Default, but will be overwritten
+        reimbursementForm: "pix" as "pix" | "bank",
+        chavePix: "",
+        bankName: "",
+        bankAgency: "",
+        bankAccount: "",
     });
     const [loading, setLoading] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
@@ -56,7 +61,12 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
                 optic_name: seller.optic_name || "",
                 brand_id: seller.brand_id || "",
                 status: seller.status || "pending",
-                role: seller.role || "seller"
+                role: seller.role || "seller",
+                reimbursementForm: (seller.reimbursement_form as "pix" | "bank") || "pix",
+                chavePix: seller.chave_pix || seller.pix_key || "",
+                bankName: seller.bank_name || "",
+                bankAgency: seller.bank_agency || "",
+                bankAccount: seller.bank_account || "",
             });
             setError(null);
         }
@@ -108,11 +118,15 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
                     cpf: formData.cpf,
                     cnpj: formData.cnpj,
                     optic_name: formData.optic_name,
-                    status: formData.status
+                    status: formData.status,
+                    reimbursement_form: formData.reimbursementForm,
+                    chave_pix: formData.reimbursementForm === "pix" ? formData.chavePix : null,
+                    pix_key: formData.reimbursementForm === "pix" ? formData.chavePix : null,
+                    bank_name: formData.reimbursementForm === "bank" ? formData.bankName : null,
+                    bank_agency: formData.reimbursementForm === "bank" ? formData.bankAgency : null,
+                    bank_account: formData.reimbursementForm === "bank" ? formData.bankAccount : null,
                 })
                 .eq("id", seller.id);
-
-            if (updateError) throw updateError;
 
             if (updateError) throw updateError;
 
@@ -130,9 +144,9 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200 h-[90vh] flex flex-col">
 
-                <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50">
+                <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50 shrink-0">
                     <h3 className="text-lg font-bold text-gray-900">
                         {showDeleteConfirm ? "Confirmar Exclusão" : "Editar Vendedor"}
                     </h3>
@@ -141,135 +155,196 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
                     </button>
                 </div>
 
-                {showDeleteConfirm ? (
-                    <div className="p-6 space-y-4">
-                        <div className="p-4 bg-red-50 rounded-lg border border-red-100 flex gap-3 text-red-900">
-                            <svg className="w-6 h-6 flex-shrink-0 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                            <div>
-                                <h4 className="font-bold text-sm">Atenção! Esta ação é irreversível.</h4>
-                                <p className="text-sm mt-1">Tem certeza que deseja excluir o vendedor <b>{seller.full_name}</b>? Isso pode afetar o histórico de vendas.</p>
-                            </div>
-                        </div>
-
-                        {error && (
-                            <div className="p-3 bg-red-100 text-red-800 text-sm rounded-lg border border-red-200">
-                                {error}
-                            </div>
-                        )}
-
-                        <div className="flex justify-end gap-3 pt-2">
-                            <button
-                                type="button"
-                                onClick={() => { setShowDeleteConfirm(false); setError(null); }}
-                                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                type="button"
-                                disabled={deleteLoading}
-                                onClick={handleDelete}
-                                className="px-4 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition-colors shadow-lg shadow-red-600/20 disabled:opacity-50 flex items-center gap-2"
-                            >
-                                {deleteLoading && <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>}
-                                Sim, Excluir
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                        {error && (
-                            <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-100">
-                                {error}
-                            </div>
-                        )}
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
-                                <input
-                                    type="text"
-                                    required
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000]"
-                                    value={formData.full_name}
-                                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                                />
-                            </div>
-
-                            <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input
-                                    type="email"
-                                    // readOnly // Making it readOnly as changing auth email is complex; changing profile email might be desync.
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
-                                    value={formData.email}
-                                    disabled
-                                />
-                                <p className="text-[10px] text-gray-400 mt-1">O email não pode ser alterado por aqui.</p>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">CPF</label>
-                                <input
-                                    type="text"
-                                    maxLength={14}
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000]"
-                                    value={formData.cpf}
-                                    onChange={(e) => setFormData({ ...formData, cpf: formatCPF(e.target.value) })}
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">CNPJ</label>
-                                <input
-                                    type="text"
-                                    maxLength={18}
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000]"
-                                    value={formData.cnpj}
-                                    onChange={(e) => setFormData({ ...formData, cnpj: formatCNPJ(e.target.value) })}
-                                />
-                            </div>
-
-                            <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Nome da Ótica</label>
-                                <input
-                                    type="text"
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C00000]/20 focus:border-[#C00000]"
-                                    value={formData.optic_name}
-                                    onChange={(e) => setFormData({ ...formData, optic_name: e.target.value })}
-                                />
-                            </div>
-
-                            {/* Marca Representada e Tipo de Usuário foram removidos, pois todos são representantes gerais */}
-
-                            <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Status da Conta</label>
-                                <div className="flex bg-gray-50 rounded-lg p-1 border border-gray-200">
-                                    {['approved', 'pending', 'rejected'].map(status => (
-                                        <button
-                                            type="button"
-                                            key={status}
-                                            onClick={() => setFormData({ ...formData, status })}
-                                            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all uppercase tracking-wide
-                                            ${formData.status === status
-                                                    ? status === 'approved' ? 'bg-green-100 text-green-700 shadow-sm'
-                                                        : status === 'rejected' ? 'bg-red-100 text-red-700 shadow-sm'
-                                                            : 'bg-yellow-100 text-yellow-700 shadow-sm'
-                                                    : 'text-gray-500 hover:text-gray-900'}
-                                        `}
-                                        >
-                                            {status === 'approved' ? 'Ativo' : status === 'rejected' ? 'Recusado' : 'Pendente'}
-                                        </button>
-                                    ))}
+                <div className="flex-1 overflow-y-auto p-6">
+                    {showDeleteConfirm ? (
+                        <div className="space-y-4">
+                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 flex gap-3 text-blue-900">
+                                <svg className="w-6 h-6 flex-shrink-0 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                                <div>
+                                    <h4 className="font-bold text-sm">Atenção! Esta ação é irreversível.</h4>
+                                    <p className="text-sm mt-1">Tem certeza que deseja excluir o vendedor <b>{seller.full_name}</b>? Isso pode afetar o histórico de vendas.</p>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="flex justify-between items-center pt-4 border-t border-gray-100 mt-6">
+                            {error && (
+                                <div className="p-3 bg-blue-100 text-blue-800 text-sm rounded-lg border border-blue-200">
+                                    {error}
+                                </div>
+                            )}
+
+                            <div className="flex justify-end gap-3 pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => { setShowDeleteConfirm(false); setError(null); }}
+                                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={deleteLoading}
+                                    onClick={handleDelete}
+                                    className="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20 disabled:opacity-50 flex items-center gap-2"
+                                >
+                                    {deleteLoading && <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>}
+                                    Sim, Excluir
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <form id="edit-seller-form" onSubmit={handleSubmit} className="space-y-4">
+                            {error && (
+                                <div className="p-3 bg-blue-50 text-blue-700 text-sm rounded-lg border border-blue-100">
+                                    {error}
+                                </div>
+                            )}
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
+                                        value={formData.full_name}
+                                        onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input
+                                        type="email"
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                                        value={formData.email}
+                                        disabled
+                                    />
+                                    <p className="text-[10px] text-gray-400 mt-1">O email não pode ser alterado por aqui.</p>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">CPF</label>
+                                    <input
+                                        type="text"
+                                        maxLength={14}
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
+                                        value={formData.cpf}
+                                        onChange={(e) => setFormData({ ...formData, cpf: formatCPF(e.target.value) })}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">CNPJ</label>
+                                    <input
+                                        type="text"
+                                        maxLength={18}
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
+                                        value={formData.cnpj}
+                                        onChange={(e) => setFormData({ ...formData, cnpj: formatCNPJ(e.target.value) })}
+                                    />
+                                </div>
+
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Nome da Ótica</label>
+                                    <input
+                                        type="text"
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
+                                        value={formData.optic_name}
+                                        onChange={(e) => setFormData({ ...formData, optic_name: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="col-span-2 space-y-3">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Forma de Recebimento</label>
+                                    <div className="flex bg-gray-50 p-1 rounded-lg border border-gray-200">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, reimbursementForm: "pix" })}
+                                            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${formData.reimbursementForm === 'pix' ? 'bg-white text-[#0066FF] shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
+                                        >
+                                            PIX
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, reimbursementForm: "bank" })}
+                                            className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${formData.reimbursementForm === 'bank' ? 'bg-white text-[#0066FF] shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
+                                        >
+                                            CONTA BANCÁRIA
+                                        </button>
+                                    </div>
+
+                                    {formData.reimbursementForm === 'pix' ? (
+                                        <div className="animate-in fade-in slide-in-from-top-1">
+                                            <input
+                                                type="text"
+                                                placeholder="Chave PIX"
+                                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
+                                                value={formData.chavePix}
+                                                onChange={(e) => setFormData({ ...formData, chavePix: e.target.value })}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-top-1">
+                                            <div className="col-span-2">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Banco"
+                                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
+                                                    value={formData.bankName}
+                                                    onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
+                                                />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                placeholder="Agência"
+                                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
+                                                value={formData.bankAgency}
+                                                onChange={(e) => setFormData({ ...formData, bankAgency: e.target.value })}
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Conta"
+                                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
+                                                value={formData.bankAccount}
+                                                onChange={(e) => setFormData({ ...formData, bankAccount: e.target.value })}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Status da Conta</label>
+                                    <div className="flex bg-gray-50 rounded-lg p-1 border border-gray-200">
+                                        {['approved', 'pending', 'rejected'].map(status => (
+                                            <button
+                                                type="button"
+                                                key={status}
+                                                onClick={() => setFormData({ ...formData, status })}
+                                                className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all uppercase tracking-wide
+                                            ${formData.status === status
+                                                        ? status === 'approved' ? 'bg-green-100 text-green-700 shadow-sm'
+                                                            : status === 'rejected' ? 'bg-blue-100 text-blue-700 shadow-sm'
+                                                                : 'bg-yellow-100 text-yellow-700 shadow-sm'
+                                                        : 'text-gray-500 hover:text-gray-900'}
+                                        `}
+                                            >
+                                                {status === 'approved' ? 'Ativo' : status === 'rejected' ? 'Recusado' : 'Pendente'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    )}
+                </div>
+
+                {!showDeleteConfirm && (
+                    <div className="p-6 border-t border-gray-100 shrink-0 bg-gray-50/50">
+                        <div className="flex justify-between items-center">
                             <button
                                 type="button"
                                 onClick={() => setShowDeleteConfirm(true)}
-                                className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                                className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
                             >
                                 Excluir Vendedor
                             </button>
@@ -283,15 +358,16 @@ export default function EditSellerModal({ isOpen, onClose, seller, onSuccess }: 
                                 </button>
                                 <button
                                     type="submit"
+                                    form="edit-seller-form"
                                     disabled={loading}
-                                    className="px-6 py-2 bg-[#C00000] text-white text-sm font-bold rounded-lg hover:bg-[#A00000] transition-colors shadow-lg shadow-[#C00000]/20 disabled:opacity-50 flex items-center gap-2"
+                                    className="px-6 py-2 bg-[#0066FF] text-white text-sm font-bold rounded-lg hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20 disabled:opacity-50 flex items-center gap-2"
                                 >
                                     {loading && <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>}
                                     Salvar Alterações
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 )}
             </div>
         </div >

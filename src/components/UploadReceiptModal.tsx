@@ -140,7 +140,7 @@ export default function UploadReceiptModal({ isOpen, onClose, seller, onSuccess 
                     <div className="text-right bg-gray-50 p-2 rounded-lg border border-gray-100">
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Saldo Disponível</p>
                         {isLoadingBalance ? (
-                            <div className="h-5 w-5 border-2 border-[#C00000]/30 border-t-[#C00000] rounded-full animate-spin mx-auto"></div>
+                            <div className="h-5 w-5 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto"></div>
                         ) : availableBalance !== null ? (
                             <p className={`text-sm font-black ${availableBalance > 0 ? 'text-green-600' : 'text-gray-900'}`}>
                                 R$ {availableBalance.toFixed(2).replace(".", ",")}
@@ -159,7 +159,7 @@ export default function UploadReceiptModal({ isOpen, onClose, seller, onSuccess 
                             type="number"
                             step="0.01"
                             min="0"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                             value={amount}
                             onChange={(e) => setAmount(parseFloat(e.target.value))}
                             placeholder="0,00"
@@ -170,7 +170,7 @@ export default function UploadReceiptModal({ isOpen, onClose, seller, onSuccess 
                         <input
                             required
                             type="month"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000]"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF]"
                             value={period}
                             onChange={(e) => setPeriod(e.target.value)}
                         />
@@ -182,7 +182,7 @@ export default function UploadReceiptModal({ isOpen, onClose, seller, onSuccess 
                             required
                             type="file"
                             accept="image/*,application/pdf"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#C00000] focus:border-[#C00000] file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-[#C00000]/10 file:text-[#C00000] hover:file:bg-[#C00000]/20"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-[#0066FF] focus:border-[#0066FF] file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-[#0066FF]/10 file:text-[#0066FF] hover:file:bg-[#0066FF]/20"
                             onChange={(e) => setFile(e.target.files?.[0] || null)}
                         />
                     </div>
@@ -198,7 +198,7 @@ export default function UploadReceiptModal({ isOpen, onClose, seller, onSuccess 
                         </button>
                         <button
                             type="submit"
-                            className="flex-1 px-4 py-2 bg-[#C00000] text-white rounded-lg hover:bg-[#A00000] font-bold shadow flex items-center justify-center transition-colors"
+                            className="flex-1 px-4 py-2 bg-[#0066FF] text-white rounded-lg hover:bg-[#0052CC] font-bold shadow flex items-center justify-center transition-colors"
                             disabled={loading}
                         >
                             {loading ? (
