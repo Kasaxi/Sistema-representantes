@@ -75,7 +75,7 @@ export default function HomePage() {
         </header>
 
         {/* Campaign Carousel replacement for Stats */}
-        <section className="relative group max-w-5xl mx-auto mb-20 overflow-hidden rounded-3xl shadow-2xl bg-white border border-gray-100 h-[400px] md:h-[500px]">
+        <section className="relative group w-full max-w-5xl mx-auto mb-20 overflow-hidden rounded-3xl shadow-2xl bg-white border border-gray-100 aspect-video">
           {loading ? (
             <div className="w-full h-full flex items-center justify-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
