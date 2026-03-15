@@ -117,9 +117,9 @@ export default function CadastroPage() {
 
             {/* Header Container */}
             <div className="max-w-5xl mx-auto mb-10 text-center">
-                <Link href="/login" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-[#0066FF] mb-6 transition-colors">
+                <Link href="/" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-[#0066FF] mb-6 transition-colors">
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Voltar para Login
+                    Voltar para Página Inicial
                 </Link>
                 <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-3">Cadastro de Representante</h1>
                 <p className="text-lg text-gray-500 max-w-2xl mx-auto">
@@ -130,14 +130,11 @@ export default function CadastroPage() {
             {/* Main Form Card ("Paper" Layout) */}
             <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
 
-                {/* Stepper Header */}
-                <div className="bg-gray-50 border-b border-gray-100 px-8 py-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-[#0066FF] text-white flex items-center justify-center font-bold text-sm">1</div>
-                        <span className="font-semibold text-gray-900">Dados Pessoais</span>
-                        <div className="w-12 h-px bg-gray-300 mx-2"></div>
-                        <div className="w-8 h-8 rounded-full bg-white border-2 border-gray-300 text-gray-500 flex items-center justify-center font-bold text-sm">2</div>
-                        <span className="font-medium text-gray-500">Dados Comerciais</span>
+                {/* Form Header */}
+                <div className="bg-gray-50 border-b border-gray-100 px-8 py-6 flex items-center justify-between">
+                    <div>
+                        <h3 className="font-semibold text-gray-900">Formulário de Cadastro</h3>
+                        <p className="text-xs text-gray-400 mt-0.5">Preencha todos os campos abaixo</p>
                     </div>
                     <div className="text-xs font-medium text-gray-400 uppercase tracking-widest">
                         CONFIDENCIAL

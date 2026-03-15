@@ -82,6 +82,11 @@ export default function LoginPage() {
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-24 bg-white relative">
                 <div className="w-full max-w-md space-y-10">
 
+                    <Link href="/" className="inline-flex items-center text-sm font-medium text-gray-400 hover:text-[#0066FF] transition-colors mb-4">
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        Página Inicial
+                    </Link>
+
                     <div className="text-center lg:text-left">
                         <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Bem-vindo de volta</h2>
                         <p className="mt-2 text-gray-500">Insira suas credenciais para acessar o painel.</p>
