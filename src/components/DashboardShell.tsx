@@ -9,7 +9,7 @@ import MarketingPopup from "./MarketingPopup";
 
 interface DashboardShellProps {
     children: React.ReactNode;
-    userRole?: "admin" | "representative" | "seller";
+    userRole?: "admin" | "representative" | "seller" | "shopkeeper";
 }
 
 export default function DashboardShell({ children, userRole = "representative" }: DashboardShellProps) {
@@ -47,17 +47,25 @@ export default function DashboardShell({ children, userRole = "representative" }
     // Correctly determine role based on fetched profile OR fallback to prop
     const effectiveRole = userProfile?.role || userRole;
 
-    const navItems = effectiveRole === "admin" ? [
+    const isAdminOrRep = effectiveRole === "admin" || effectiveRole === "representative";
+    const isShopkeeper = effectiveRole === "shopkeeper";
+
+    const navItems = isAdminOrRep ? [
         { name: "Visão Geral", href: "/admin", icon: "LayoutDashboard" },
-        { name: "Auditoria", href: "/admin/auditoria", icon: "FileCheck" },
-        { name: "Ranking", href: "/admin/ranking", icon: "Trophy" },
-        { name: "Prêmios", href: "/premios", icon: "Gem" },
-        { name: "Marketing", href: "/admin/marketing", icon: "Megaphone" },
+        { name: "Estoque", href: "/admin/estoque/dashboard", icon: "BarChart3" },
+        { name: "Produtos", href: "/admin/produtos", icon: "Tag" },
         { name: "Marcas", href: "/admin/marcas", icon: "Tag" },
-        { name: "Relatórios", href: "/admin/relatorios", icon: "BarChart3" },
+        { name: "Suprimento", href: "/admin/estoque/config", icon: "Package" },
+        { name: "Ranking", href: "/admin/ranking", icon: "Trophy" },
+        { name: "Auditoria", href: "/admin/auditoria", icon: "FileCheck" },
+        { name: "Marketing", href: "/admin/marketing", icon: "Megaphone" },
         { name: "Vendedores", href: "/admin/vendedores", icon: "Users" },
         { name: "Óticas", href: "/admin/oticas", icon: "Glasses" },
-        { name: "Enviar Nota", href: "/enviar-nota", icon: "Upload" },
+        { name: "Prêmios", href: "/premios", icon: "Gem" },
+    ] : isShopkeeper ? [
+        { name: "Meu Estoque", href: "/lojista/estoque", icon: "LayoutDashboard" },
+        { name: "Movimentações", href: "/lojista/movimentacoes", icon: "Receipt" },
+        { name: "Meu Perfil", href: "/dashboard/perfil", icon: "Users" },
     ] : [
         { name: "Visão Geral", href: "/dashboard", icon: "LayoutDashboard" },
         { name: "Lançar Notas", href: "/enviar-nota", icon: "Upload" },
@@ -142,6 +150,7 @@ export default function DashboardShell({ children, userRole = "representative" }
                                     {item.icon === "Megaphone" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>}
                                     {item.icon === "Tag" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>}
                                     {item.icon === "Receipt" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>}
+                                    {item.icon === "Package" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v10m0 0l-8-4m0 0V7m0 0l8 4" /></svg>}
                                 </div>
                                 {!isCollapsed && <span className="animate-in fade-in duration-200">{item.name}</span>}
                                 {isActive && !isCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white opacity-50" />}

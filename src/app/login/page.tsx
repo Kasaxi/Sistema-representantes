@@ -33,8 +33,10 @@ export default function LoginPage() {
 
                 if (profile?.status === "pending") {
                     router.push("/aguardando-aprovacao");
-                } else if (profile?.role === "admin") {
+                } else if (profile?.role === "admin" || profile?.role === "representative") {
                     router.push("/admin");
+                } else if (profile?.role === "shopkeeper") {
+                    router.push("/lojista/estoque");
                 } else {
                     router.push("/dashboard");
                 }

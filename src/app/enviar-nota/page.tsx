@@ -17,8 +17,9 @@ export default function UploadSalePage() {
 
     // Novas variaveis de estado
     const [brands, setBrands] = useState<{ id: string; name: string }[]>([]);
+    const [products, setProducts] = useState<{ id: string; sku: string; name: string }[]>([]);
     const [selectedBrand, setSelectedBrand] = useState<string>("");
-    const [reference, setReference] = useState<string>("");
+    const [selectedProductId, setSelectedProductId] = useState<string>("");
     const [taxCouponNumber, setTaxCouponNumber] = useState<string>("");
 
     useEffect(() => {
@@ -39,6 +40,23 @@ export default function UploadSalePage() {
         }
         fetchInitialData();
     }, []);
+
+    useEffect(() => {
+        async function fetchProducts() {
+            if (!selectedBrand) {
+                setProducts([]);
+                return;
+            }
+            const { data } = await supabase
+                .from("products")
+                .select("id, sku, name")
+                .eq("brand_id", selectedBrand)
+                .eq("is_active", true)
+                .order("sku");
+            if (data) setProducts(data);
+        }
+        fetchProducts();
+    }, [selectedBrand]);
 
     const handleFile = (file: File) => {
         if (file && file.type.startsWith("image/")) {
@@ -79,8 +97,8 @@ export default function UploadSalePage() {
         setLoading(true);
         setError(null);
 
-        if (!reference || reference.trim() === "") {
-            setError("O campo 'Referência' é obrigatório.");
+        if (!selectedProductId || selectedProductId === "") {
+            setError("A seleção do produto é obrigatória.");
             setLoading(false);
             return;
         }
@@ -140,7 +158,8 @@ export default function UploadSalePage() {
             const { error: saleError } = await supabase.from("sales").insert({
                 seller_id: user.id,
                 brand_id: selectedBrand || profile.brand_id,
-                reference: reference,
+                product_id: selectedProductId,
+                reference: products.find(p => p.id === selectedProductId)?.sku || "",
                 tax_coupon_number: taxCouponNumber.trim(),
                 invoice_photo_url: uploadData.path,
                 status: "pending",
@@ -158,7 +177,7 @@ export default function UploadSalePage() {
     };
 
     return (
-        <DashboardShell userRole="representative">
+        <DashboardShell>
             <div className="max-w-3xl mx-auto">
 
                 {/* Header */}
@@ -249,15 +268,19 @@ export default function UploadSalePage() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">Referência</label>
-                                    <input
-                                        type="text"
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Selecione o Produto (SKU)</label>
+                                    <select
                                         required
-                                        value={reference}
-                                        onChange={(e) => setReference(e.target.value)}
-                                        placeholder="Ex: REF-12345"
-                                        className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] bg-white transition-all text-gray-900"
-                                    />
+                                        value={selectedProductId}
+                                        onChange={(e) => setSelectedProductId(e.target.value)}
+                                        disabled={!selectedBrand}
+                                        className="w-full h-12 px-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] appearance-none bg-white transition-all text-gray-900 disabled:bg-gray-50 disabled:text-gray-400"
+                                    >
+                                        <option value="">{selectedBrand ? "Selecione o modelo" : "Selecione a marca primeiro"}</option>
+                                        {products.map(product => (
+                                            <option key={product.id} value={product.id}>{product.sku} - {product.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
 
