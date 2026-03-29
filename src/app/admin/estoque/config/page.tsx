@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import DashboardShell from "@/components/DashboardShell";
 import { toast, Toaster } from "sonner";
 import { Save, Search, Store, Package, AlertTriangle } from "lucide-react";
+import { getStockStatus, getStockStatusStyle } from "@/lib/stockStatus";
 
 interface Optic {
     id: string;
@@ -251,8 +252,9 @@ export default function AdminInventoryConfigPage() {
                                                 <tr><td colSpan={5} className="p-12 text-center text-gray-400">Nenhum produto encontrado.</td></tr>
                                             ) : (
                                                 filteredProducts.map(p => {
-                                                    const config = configs[p.id] || { product_id: p.id, min_stock: 0, max_stock: 100, current_stock: 0 };
-                                                    const isUnderMin = config.current_stock < config.min_stock;
+                                                    const config = configs[p.id] || { product_id: p.id, min_stock: 0, max_stock: 0, current_stock: 0 };
+                                                    const status = getStockStatus(config.current_stock, config.min_stock, config.max_stock);
+                                                    const statusStyle = getStockStatusStyle(status);
                                                     
                                                     return (
                                                         <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
@@ -260,6 +262,7 @@ export default function AdminInventoryConfigPage() {
                                                                 <div className="text-gray-900 font-black">{p.sku}</div>
                                                                 <div className="text-[10px] text-gray-400 uppercase tracking-wider">{p.brands.name}</div>
                                                             </td>
+                                                            {/* Correção 3: helper text when min is 0 */}
                                                             <td className="p-6">
                                                                 <input
                                                                     type="number"
@@ -267,6 +270,9 @@ export default function AdminInventoryConfigPage() {
                                                                     value={config.min_stock}
                                                                     onChange={e => handleConfigChange(p.id, 'min_stock', parseInt(e.target.value) || 0)}
                                                                 />
+                                                                {config.min_stock === 0 && (
+                                                                    <span className="block text-center text-[9px] text-gray-400 mt-1">0 = sem limite mínimo</span>
+                                                                )}
                                                             </td>
                                                             <td className="p-6">
                                                                 <input
@@ -276,30 +282,50 @@ export default function AdminInventoryConfigPage() {
                                                                     onChange={e => handleConfigChange(p.id, 'max_stock', parseInt(e.target.value) || 0)}
                                                                 />
                                                             </td>
+                                                            {/* Correção 1: semaphore status indicator */}
                                                             <td className="p-6">
                                                                 <div className="flex flex-col items-center">
-                                                                    <div className={`text-base font-black px-2 py-0.5 rounded-lg ${isUnderMin ? 'bg-red-50 text-red-600' : 'text-gray-900'}`}>
-                                                                        {config.current_stock}
-                                                                    </div>
+                                                                    {status === 'unconfigured' ? (
+                                                                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg ${statusStyle.bgClass} ${statusStyle.textClass}`}>
+                                                                            {statusStyle.label}
+                                                                        </span>
+                                                                    ) : (
+                                                                        <>
+                                                                            <div className={`text-base font-black px-2.5 py-0.5 rounded-lg flex items-center gap-1.5 ${statusStyle.bgClass} ${statusStyle.textClass}`}>
+                                                                                <span className="text-sm">{statusStyle.icon}</span>
+                                                                                {config.current_stock}
+                                                                            </div>
+                                                                            {statusStyle.label && (
+                                                                                <span className={`text-[9px] font-bold uppercase mt-1 ${statusStyle.textClass}`}>
+                                                                                    {statusStyle.label}
+                                                                                </span>
+                                                                            )}
+                                                                        </>
+                                                                    )}
                                                                 </div>
                                                             </td>
+                                                            {/* Correção 2: styled tooltips on action icons */}
                                                             <td className="p-6 text-right">
                                                                 <div className="flex justify-end gap-2">
-                                                                    <button
-                                                                        title="Abastecer / Ajustar"
-                                                                        onClick={() => setAdjustingProduct(p)}
-                                                                        className="p-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm shadow-blue-500/5 active:scale-95"
-                                                                    >
-                                                                        <Package className="w-4 h-4" />
-                                                                    </button>
-                                                                    <button
-                                                                        title="Salvar Limites"
-                                                                        disabled={saving}
-                                                                        onClick={() => handleSaveLimits(p.id)}
-                                                                        className="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:bg-gray-900 hover:text-white transition-all active:scale-95 disabled:opacity-50"
-                                                                    >
-                                                                        <Save className="w-4 h-4" />
-                                                                    </button>
+                                                                    <span className="tooltip-wrap" data-tooltip="Registrar movimentação">
+                                                                        <button
+                                                                            title="Registrar movimentação"
+                                                                            onClick={() => setAdjustingProduct(p)}
+                                                                            className="p-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm shadow-blue-500/5 active:scale-95"
+                                                                        >
+                                                                            <Package className="w-4 h-4" />
+                                                                        </button>
+                                                                    </span>
+                                                                    <span className="tooltip-wrap" data-tooltip="Editar limites">
+                                                                        <button
+                                                                            title="Editar limites"
+                                                                            disabled={saving}
+                                                                            onClick={() => handleSaveLimits(p.id)}
+                                                                            className="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:bg-gray-900 hover:text-white transition-all active:scale-95 disabled:opacity-50"
+                                                                        >
+                                                                            <Save className="w-4 h-4" />
+                                                                        </button>
+                                                                    </span>
                                                                 </div>
                                                             </td>
                                                         </tr>

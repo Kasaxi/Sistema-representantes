@@ -18,6 +18,7 @@ export default function DashboardShell({ children, userRole = "representative" }
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [userProfile, setUserProfile] = useState<any>(null);
+    const [shopSubscription, setShopSubscription] = useState<any>(null);
 
     useEffect(() => {
         async function getUser() {
@@ -32,6 +33,25 @@ export default function DashboardShell({ children, userRole = "representative" }
                 }
 
                 setUserProfile(data);
+
+                // Fetch subscription if shopkeeper or seller with CNPJ (linked to optic)
+                if (data?.role === 'shopkeeper' || (data?.role === 'seller' && data?.cnpj)) {
+                    // Buscar a subscription baseada no CNPJ do usuário
+                    const opticId = data?.cnpj 
+                        ? (await supabase.from("optics").select("id").eq("cnpj", data.cnpj).maybeSingle())?.data?.id
+                        : null;
+                    
+                    if (opticId) {
+                        const { data: sub } = await supabase
+                            .from("shop_subscriptions")
+                            .select("*")
+                            .eq("optic_id", opticId)
+                            .maybeSingle();
+                        if (sub) {
+                            setShopSubscription(sub);
+                        }
+                    }
+                }
             } else {
                 router.push('/login');
             }
@@ -49,31 +69,75 @@ export default function DashboardShell({ children, userRole = "representative" }
 
     const isAdminOrRep = effectiveRole === "admin" || effectiveRole === "representative";
     const isShopkeeper = effectiveRole === "shopkeeper";
+    
+    // Verificar se é um seller com CNPJ vinculado a uma ótica
+    const isSellerInOptic = effectiveRole === "seller" && userProfile?.cnpj;
+    
+    // Se for seller com CNPJ, tratar como lojista para menu
+    const showShopkeeperMenu = isShopkeeper || isSellerInOptic;
 
-    const navItems = isAdminOrRep ? [
-        { name: "Visão Geral", href: "/admin", icon: "LayoutDashboard" },
-        { name: "Estoque", href: "/admin/estoque/dashboard", icon: "BarChart3" },
-        { name: "Produtos", href: "/admin/produtos", icon: "Tag" },
-        { name: "Marcas", href: "/admin/marcas", icon: "Tag" },
-        { name: "Suprimento", href: "/admin/estoque/config", icon: "Package" },
-        { name: "Ranking", href: "/admin/ranking", icon: "Trophy" },
-        { name: "Auditoria", href: "/admin/auditoria", icon: "FileCheck" },
-        { name: "Marketing", href: "/admin/marketing", icon: "Megaphone" },
-        { name: "Vendedores", href: "/admin/vendedores", icon: "Users" },
-        { name: "Óticas", href: "/admin/oticas", icon: "Glasses" },
-        { name: "Prêmios", href: "/premios", icon: "Gem" },
-    ] : isShopkeeper ? [
-        { name: "Meu Estoque", href: "/lojista/estoque", icon: "LayoutDashboard" },
-        { name: "Movimentações", href: "/lojista/movimentacoes", icon: "Receipt" },
-        { name: "Meu Perfil", href: "/dashboard/perfil", icon: "Users" },
-    ] : [
-        { name: "Visão Geral", href: "/dashboard", icon: "LayoutDashboard" },
-        { name: "Lançar Notas", href: "/enviar-nota", icon: "Upload" },
-        { name: "Minhas Vendas", href: "/vendas", icon: "Receipt" },
-        { name: "Ranking", href: "/ranking", icon: "Trophy" },
-        { name: "Prêmios", href: "/premios", icon: "Gem" },
-        { name: "Meu Perfil", href: "/dashboard/perfil", icon: "Users" },
-    ];
+    const hasProAccess = shopSubscription?.plan === 'pro' && shopSubscription?.status === 'active';
+
+    // Menu diferente para cada tipo de usuário
+    let menuItems: { name: string; href: string; icon: string }[] = [];
+    
+    if (isAdminOrRep) {
+        // Menu ADMIN
+        menuItems = [
+            { name: "Visão Geral", href: "/admin", icon: "LayoutDashboard" },
+            { name: "Estoque", href: "/admin/estoque/dashboard", icon: "BarChart3" },
+            { name: "Produtos", href: "/admin/produtos", icon: "Tag" },
+            { name: "Marcas", href: "/admin/marcas", icon: "Tag" },
+            { name: "Suprimento", href: "/admin/estoque/config", icon: "Package" },
+            { name: "Ranking", href: "/admin/ranking", icon: "Trophy" },
+            { name: "Auditoria", href: "/admin/auditoria", icon: "FileCheck" },
+            { name: "Marketing", href: "/admin/marketing", icon: "Megaphone" },
+            { name: "Vendedores", href: "/admin/vendedores", icon: "Users" },
+            { name: "Óticas", href: "/admin/oticas", icon: "Glasses" },
+            { name: "Prêmios", href: "/premios", icon: "Gem" },
+        ];
+    } else if (isShopkeeper) {
+        // Menu LOJISTA (dono da ótica)
+        menuItems = [
+            { name: "Visão Geral", href: "/dashboard", icon: "LayoutDashboard" },
+            ...(hasProAccess ? [
+                { name: "PDV", href: "/lojista/pdv", icon: "ShoppingCart" },
+                { name: "Meu Estoque", href: "/lojista/estoque", icon: "Package" },
+                { name: "Movimentações", href: "/lojista/movimentacoes", icon: "Receipt" },
+                { name: "Vendas Pendentes", href: "/lojista/vendas-pendentes", icon: "Clock" },
+                { name: "Vendedores", href: "/lojista/vendedores", icon: "Users" },
+                { name: "Marcas", href: "/lojista/marcas", icon: "Tag" },
+                { name: "Financeiro", href: "/lojista/financeiro", icon: "DollarSign" },
+            ] : [
+                { name: "🔒 Upgrade para PRO", href: "/lojista/estoque/upgrade", icon: "Lock" },
+            ]),
+            { name: "Ranking", href: "/ranking", icon: "Trophy" },
+            { name: "Meu Perfil", href: "/dashboard/perfil", icon: "Users" },
+        ];
+    } else if (isSellerInOptic) {
+        // Menu VENDEDOR (funcionário da ótica)
+        menuItems = [
+            { name: "Visão Geral", href: "/dashboard", icon: "LayoutDashboard" },
+            { name: "PDV", href: "/lojista/pdv", icon: "ShoppingCart" },
+            { name: "Ver Estoque", href: "/lojista/estoque", icon: "Package" },
+            { name: "Minhas Vendas", href: "/vendas", icon: "Receipt" },
+            { name: "Ranking", href: "/ranking", icon: "Trophy" },
+            { name: "Prêmios", href: "/premios", icon: "Gem" },
+            { name: "Meu Perfil", href: "/dashboard/perfil", icon: "Users" },
+        ];
+    } else {
+        // Menu REPRESENTANTE (padrão)
+        menuItems = [
+            { name: "Visão Geral", href: "/dashboard", icon: "LayoutDashboard" },
+            { name: "Lançar Notas", href: "/enviar-nota", icon: "Upload" },
+            { name: "Minhas Vendas", href: "/vendas", icon: "Receipt" },
+            { name: "Ranking", href: "/ranking", icon: "Trophy" },
+            { name: "Prêmios", href: "/premios", icon: "Gem" },
+            { name: "Meu Perfil", href: "/dashboard/perfil", icon: "Users" },
+        ];
+    }
+
+    const navItems = menuItems;
 
     return (
         <div className="min-h-screen bg-[#F8F9FA] flex text-gray-900 font-sans">
@@ -114,11 +178,32 @@ export default function DashboardShell({ children, userRole = "representative" }
                         <div className="px-4 py-3 bg-gray-50 rounded-xl border border-gray-100 mb-6 animate-in fade-in duration-200">
                             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Logado como</p>
                             <p className="font-semibold text-sm truncate">{userProfile?.full_name || "Carregando..."}</p>
-                            <p className="text-xs text-[#0066FF] font-medium capitalize">{userRole === 'admin' ? 'Administrador' : 'Representante'}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                                {showShopkeeperMenu && shopSubscription ? (
+                                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                                        shopSubscription.plan === 'pro' && shopSubscription.status === 'active'
+                                            ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white'
+                                            : 'bg-gray-200 text-gray-600'
+                                    }`}>
+                                        {shopSubscription.plan === 'pro' && shopSubscription.status === 'active' ? 'PRO' : 'FREE'}
+                                    </span>
+                                ) : (
+                                    <p className="text-xs text-[#0066FF] font-medium capitalize">{userRole === 'admin' ? 'Administrador' : 'Representante'}</p>
+                                )}
+                            </div>
                         </div>
                     ) : (
-                        <div className="mb-6 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#0066FF] font-bold text-xs border border-gray-200" title={userProfile?.full_name}>
-                            {userProfile?.full_name?.charAt(0) || "U"}
+                        <div className="relative mb-6" title={userProfile?.full_name}>
+                            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#0066FF] font-bold text-xs border border-gray-200">
+                                {userProfile?.full_name?.charAt(0) || "U"}
+                            </div>
+                            {showShopkeeperMenu && shopSubscription && (
+                                <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
+                                    shopSubscription.plan === 'pro' && shopSubscription.status === 'active'
+                                        ? 'bg-gradient-to-r from-amber-400 to-orange-500'
+                                        : 'bg-gray-400'
+                                }`} title={shopSubscription.plan === 'pro' ? 'PRO' : 'FREE'} />
+                            )}
                         </div>
                     )}
                 </div>
@@ -142,6 +227,7 @@ export default function DashboardShell({ children, userRole = "representative" }
                                     {item.icon === "LayoutDashboard" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>}
                                     {item.icon === "Users" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>}
                                     {item.icon === "Glasses" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>}
+                                    {item.icon === "Store" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>}
                                     {item.icon === "Trophy" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>}
                                     {item.icon === "Gem" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
                                     {item.icon === "FileCheck" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
@@ -151,6 +237,10 @@ export default function DashboardShell({ children, userRole = "representative" }
                                     {item.icon === "Tag" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>}
                                     {item.icon === "Receipt" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>}
                                     {item.icon === "Package" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v10m0 0l-8-4m0 0V7m0 0l8 4" /></svg>}
+                                    {item.icon === "ShoppingCart" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>}
+                                    {item.icon === "DollarSign" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
+                                    {item.icon === "Clock" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
+                                    {item.icon === "Lock" && <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>}
                                 </div>
                                 {!isCollapsed && <span className="animate-in fade-in duration-200">{item.name}</span>}
                                 {isActive && !isCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white opacity-50" />}

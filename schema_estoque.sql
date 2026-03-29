@@ -14,6 +14,14 @@ ALTER TABLE sales ADD COLUMN IF NOT EXISTS product_id UUID;
 ALTER TABLE sales ADD COLUMN IF NOT EXISTS quantity INTEGER DEFAULT 1;
 ALTER TABLE sales ADD COLUMN IF NOT EXISTS unit_price DECIMAL(10,2);
 
+-- Categoria de Produto (Lente, Armação, etc.)
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'product_category') THEN
+        CREATE TYPE product_category AS ENUM ('lente', 'armação', 'receituário', 'óculos solar');
+    END IF;
+END $$;
+
 -- 2. Novas Tabelas
 DO $$ 
 BEGIN 
@@ -30,6 +38,7 @@ CREATE TABLE IF NOT EXISTS products (
     brand_id UUID REFERENCES brands(id) ON DELETE CASCADE,
     unit_cost DECIMAL(10,2) NOT NULL,
     suggested_price DECIMAL(10,2) NOT NULL,
+    category product_category NOT NULL DEFAULT 'armação',
     unit_type TEXT NOT NULL DEFAULT 'unidade', -- unidade, par, caixa
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

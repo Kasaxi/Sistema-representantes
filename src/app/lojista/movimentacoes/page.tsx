@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import DashboardShell from "@/components/DashboardShell";
 import { 
@@ -9,6 +10,7 @@ import {
 import { toast, Toaster } from "sonner";
 
 export default function ShopkeeperMovementsPage() {
+    const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [movements, setMovements] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -21,7 +23,10 @@ export default function ShopkeeperMovementsPage() {
         setLoading(true);
         
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+            router.push('/login');
+            return;
+        }
 
         const { data: profile } = await supabase
             .from("profiles")
@@ -42,6 +47,18 @@ export default function ShopkeeperMovementsPage() {
 
         if (!optic) {
             setLoading(false);
+            return;
+        }
+
+        // Check Subscription status
+        const { data: sub } = await supabase
+            .from("shop_subscriptions")
+            .select("plan, status")
+            .eq("optic_id", optic.id)
+            .maybeSingle();
+
+        if (sub?.plan !== 'pro' || sub?.status !== 'active') {
+            router.push('/lojista/estoque/upgrade');
             return;
         }
 

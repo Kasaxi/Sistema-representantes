@@ -17,6 +17,48 @@
 :root {
   --background: #F8F9FA;
   --foreground: #111827;
+
+  /* Stock status semantic tokens */
+  --status-ok-bg: #dcfce7;
+  --status-ok-text: #16a34a;
+  --status-low-bg: #fee2e2;
+  --status-low-text: #dc2626;
+  --status-high-bg: #fef3c7;
+  --status-high-text: #d97706;
+  --status-none-bg: #f3f4f6;
+  --status-none-text: #6b7280;
+
+  /* Markup thresholds */
+  --markup-good-text: #16a34a;
+  --markup-mid-text: #d97706;
+  --markup-bad-text: #dc2626;
+}
+
+/* CSS-only tooltip */
+.tooltip-wrap {
+  position: relative;
+}
+.tooltip-wrap::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.95);
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #1e293b;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+  z-index: 50;
+}
+.tooltip-wrap:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
 }
 
 body {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import DashboardShell from "@/components/DashboardShell";
 import { 
@@ -10,6 +11,7 @@ import {
 import { toast, Toaster } from "sonner";
 
 export default function ShopkeeperInventoryPage() {
+    const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [inventory, setInventory] = useState<any[]>([]);
     const [stats, setStats] = useState({
@@ -28,7 +30,10 @@ export default function ShopkeeperInventoryPage() {
         
         // Get user profile to find their cnpj
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+            router.push('/login');
+            return;
+        }
 
         const { data: profile } = await supabase
             .from("profiles")
@@ -52,6 +57,18 @@ export default function ShopkeeperInventoryPage() {
         if (!optic) {
             toast.error("Ótica não encontrada para este CNPJ.");
             setLoading(false);
+            return;
+        }
+
+        // Check Subscription status
+        const { data: sub } = await supabase
+            .from("shop_subscriptions")
+            .select("plan, status")
+            .eq("optic_id", optic.id)
+            .maybeSingle();
+
+        if (sub?.plan !== 'pro' || sub?.status !== 'active') {
+            router.push('/lojista/estoque/upgrade');
             return;
         }
 

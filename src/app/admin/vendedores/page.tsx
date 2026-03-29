@@ -41,10 +41,18 @@ export default function AdminSellersPage() {
     const fetchSellers = async () => {
         const { data } = await supabase
             .from("profiles")
-            .select("*, brands(name)")
+            .select("*, optics!profiles_cnpj_fkey(trade_name, corporate_name)")
             .in("role", ["seller", "representative"])
             .order("created_at", { ascending: false });
-        if (data) setSellers(data);
+        
+        if (data) {
+            // Transformar dados para adicionar optic_name
+            const transformed = data.map(seller => ({
+                ...seller,
+                optic_name: seller.optics?.trade_name || seller.optics?.corporate_name || 'Sem ótica'
+            }));
+            setSellers(transformed);
+        }
         setLoading(false);
     };
 

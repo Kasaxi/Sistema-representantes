@@ -8,6 +8,13 @@ import DashboardWidgets from "@/components/DashboardWidgets";
 import RealtimeRanking from "@/components/RealtimeRanking";
 import DashboardShell from "@/components/DashboardShell";
 
+interface Notice {
+    id: string;
+    title: string;
+    description: string;
+    created_at: string;
+}
+
 export default function SellerDashboard() {
     const router = useRouter();
     const [profile, setProfile] = useState<any>(null);
@@ -15,6 +22,7 @@ export default function SellerDashboard() {
     const [dataLoading, setDataLoading] = useState(false);
     const [stats, setStats] = useState({ totalSales: 0, pendingPoints: 0 });
     const [salesData, setSalesData] = useState<any[]>([]);
+    const [notices, setNotices] = useState<Notice[]>([]);
 
     // Filters for Seller
     const [filters, setFilters] = useState({
@@ -25,6 +33,22 @@ export default function SellerDashboard() {
     const fetchSellerData = async (userId: string) => {
         setDataLoading(true);
         console.log("Fetching Seller Data for UserID:", userId, "Filters:", filters);
+        
+        // Fetch notices from marketing campaigns
+        const now = new Date().toISOString();
+        const { data: noticesData } = await supabase
+            .from("marketing_campaigns")
+            .select("id, title, description, created_at")
+            .eq("is_active", true)
+            .lte("start_date", now)
+            .or(`end_date.is.null,end_date.gte.${now}`)
+            .order("priority", { ascending: false })
+            .limit(3);
+        
+        if (noticesData) {
+            setNotices(noticesData);
+        }
+
         try {
             let query = supabase
                 .from("sales")
@@ -110,7 +134,7 @@ export default function SellerDashboard() {
         <DashboardShell userRole="representative">
 
             {/* Welcome Banner */}
-            <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 mb-8 text-white relative overflow-hidden shadow-lg">
+            <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 mb-6 text-white relative overflow-hidden shadow-lg">
                 <div className="relative z-10">
                     <h2 className="text-3xl font-bold mb-2">Olá, {profile.full_name?.split(' ')[0]} 👋</h2>
                     <p className="text-gray-300 max-w-xl">
@@ -120,6 +144,56 @@ export default function SellerDashboard() {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none"></div>
                 <div className="absolute bottom-0 right-20 w-32 h-32 bg-[#0066FF] opacity-20 rounded-full blur-xl pointer-events-none"></div>
             </div>
+
+            {/* Quick Access Buttons - Only for Shopkeepers */}
+            {profile.role === 'shopkeeper' || profile.role === 'seller' ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button
+                        onClick={() => router.push('/lojista/pdv')}
+                        className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 p-4 rounded-2xl text-white text-left transition-all shadow-lg shadow-blue-900/20"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                            </div>
+                            <div>
+                                <p className="font-bold">Abrir PDV</p>
+                                <p className="text-xs text-white/70">Nova venda rápida</p>
+                            </div>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => router.push('/lojista/estoque')}
+                        className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 p-4 rounded-2xl text-white text-left transition-all shadow-lg shadow-purple-900/20"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14v10m0 0l-8-4m0 0V7m0 0l8 4" /></svg>
+                            </div>
+                            <div>
+                                <p className="font-bold">Ver Estoque</p>
+                                <p className="text-xs text-white/70">Gerenciar produtos</p>
+                            </div>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => router.push('/enviar-nota')}
+                        className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 p-4 rounded-2xl text-white text-left transition-all shadow-lg shadow-green-900/20"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                            </div>
+                            <div>
+                                <p className="font-bold">Lançar Nota</p>
+                                <p className="text-xs text-white/70">Enviar nota fiscal</p>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            ) : null}
 
             {/* Filters Bar */}
             <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm mb-8 flex flex-wrap items-center gap-4">
@@ -204,16 +278,26 @@ export default function SellerDashboard() {
 
                 <div className="space-y-4">
                     <h3 className="font-bold text-gray-900 text-lg">Mural de Avisos</h3>
-                    <div className="bg-blue-50 border border-blue-100 rounded-xl p-6">
-                        <div className="flex items-center gap-3 mb-3">
-                            <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold uppercase">Novidade</span>
-                            <span className="text-xs text-blue-400">Hoje, 10:00</span>
+                    {notices && notices.length > 0 ? (
+                        notices.map((notice) => (
+                            <div key={notice.id} className="bg-blue-50 border border-blue-100 rounded-xl p-6">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold uppercase">Novidade</span>
+                                    <span className="text-xs text-blue-400">
+                                        {new Date(notice.created_at).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })}
+                                    </span>
+                                </div>
+                                <h4 className="font-bold text-blue-900 mb-2">{notice.title}</h4>
+                                <p className="text-sm text-blue-700 leading-relaxed">
+                                    {notice.description || 'Sem descrição disponível.'}
+                                </p>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="bg-gray-50 border border-gray-100 rounded-xl p-6 text-center">
+                            <p className="text-sm text-gray-500">Nenhum aviso no momento.</p>
                         </div>
-                        <h4 className="font-bold text-blue-900 mb-2">Campanha de Incentivo Iniciada!</h4>
-                        <p className="text-sm text-blue-700 leading-relaxed">
-                            A nova temporada de vendas começou. Todas as notas enviadas a partir de hoje contam para o acelerador de bônus trimestral.
-                        </p>
-                    </div>
+                    )}
                 </div>
             </div>
 
