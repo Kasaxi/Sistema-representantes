@@ -154,7 +154,7 @@ export default function LoginPage() {
 
                 {/* Mobile-only Footer */}
                 <div className="absolute bottom-6 text-center w-full lg:hidden text-xs text-gray-400">
-                    © 2026 OptiSales Inc.
+                    © 2026 OpitHub Inc.
                 </div>
             </div>
         </div>

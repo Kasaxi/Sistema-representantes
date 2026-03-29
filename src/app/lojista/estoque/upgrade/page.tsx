@@ -117,7 +117,7 @@ function UpgradeContent() {
     });
   };
 
-  const planPrice = 3970;
+  const planPrice = 39700;
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">

@@ -32,7 +32,7 @@ export default function PendingApproval() {
                     <div className="w-10 h-10 bg-[#0066FF] rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/20">
                         <span className="text-white font-bold text-xl">O</span>
                     </div>
-                    <span className="text-2xl font-bold tracking-tight text-gray-900">OptiSales<span className="text-[#0066FF]">.</span></span>
+                    <span className="text-2xl font-bold tracking-tight text-gray-900">OpitHub<span className="text-[#0066FF]">.</span></span>
                 </div>
             </div>
 

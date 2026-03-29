@@ -123,7 +123,7 @@ export default function CadastroPage() {
                 </Link>
                 <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-3">Cadastro de Representante</h1>
                 <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-                    Preencha o formulário abaixo para solicitar acesso ao painel de incentivos da OptiSales.
+                    Preencha o formulário abaixo para solicitar acesso ao painel de incentivos da OpitHub.
                 </p>
             </div>
 
@@ -308,7 +308,7 @@ export default function CadastroPage() {
 
                     <div className="mt-14 pt-8 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
                         <p className="text-xs text-gray-400">
-                            Ao clicar em registrar, você aceita os <Link href="#" className="underline hover:text-gray-600">Termos e Condições</Link> da OptiSales.
+                            Ao clicar em registrar, você aceita os <Link href="#" className="underline hover:text-gray-600">Termos e Condições</Link> da OpitHub.
                         </p>
                         <button
                             type="submit"
@@ -322,7 +322,7 @@ export default function CadastroPage() {
             </div>
 
             <div className="mt-12 text-center text-sm text-gray-400">
-                © 2026 OptiSales Inc. Todos os direitos reservados.
+                © 2026 OpitHub Inc. Todos os direitos reservados.
             </div>
         </div>
     );

@@ -13,7 +13,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OptiSales | Incentive & Sales Management",
+  title: "OpitHub | Incentive & Sales Management",
   description: "Plataforma de gestão de incentivos e performance comercial.",
 };
 
