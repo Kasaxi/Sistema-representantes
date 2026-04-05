@@ -212,7 +212,7 @@ class AbacatePay {
   }
 
   async createSubscriptionCheckout(checkout: CreateSubscriptionParams): Promise<CheckoutResponse> {
-    return this.request<CheckoutResponse>('/subscriptions/create', 'POST', checkout);
+    return this.request<CheckoutResponse>('/billing/create', 'POST', checkout);
   }
 
   async getCheckout(checkoutId: string): Promise<CheckoutResponse> {
