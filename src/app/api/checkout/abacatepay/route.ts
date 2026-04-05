@@ -191,9 +191,10 @@ export async function POST(req: NextRequest) {
       });
     }
   } catch (error) {
-    console.error('Erro ao criar checkout:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Erro ao criar checkout:', errorMessage, error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      { error: `Erro ao processar pagamento: ${errorMessage}` },
       { status: 500 }
     );
   }
