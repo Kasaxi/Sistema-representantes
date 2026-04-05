@@ -183,11 +183,11 @@ class AbacatePay {
   }
 
   async createCustomer(customer: Customer): Promise<CustomerResponse> {
-    return this.request<CustomerResponse>('/customer/create', 'POST', customer);
+    return this.request<CustomerResponse>('/customers/create', 'POST', customer);
   }
 
   async getCustomer(customerId: string): Promise<CustomerResponse> {
-    return this.request<CustomerResponse>(`/customer/get?id=${customerId}`);
+    return this.request<CustomerResponse>(`/customers/get?id=${customerId}`);
   }
 
   async createProduct(product: {
@@ -209,7 +209,7 @@ class AbacatePay {
   }
 
   async createCheckout(checkout: CreateCheckoutParams): Promise<CheckoutResponse> {
-    return this.request<CheckoutResponse>('/checkout/create', 'POST', checkout);
+    return this.request<CheckoutResponse>('/checkouts/create', 'POST', checkout);
   }
 
   async createSubscriptionCheckout(checkout: CreateSubscriptionParams): Promise<CheckoutResponse> {
@@ -217,7 +217,7 @@ class AbacatePay {
   }
 
   async getCheckout(checkoutId: string): Promise<CheckoutResponse> {
-    return this.request<CheckoutResponse>(`/checkout/get?id=${checkoutId}`);
+    return this.request<CheckoutResponse>(`/checkouts/get?id=${checkoutId}`);
   }
 
   async cancelSubscription(subscriptionId: string): Promise<{ data: unknown; error: string | null; success: boolean }> {
