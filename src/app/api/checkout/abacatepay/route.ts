@@ -94,7 +94,14 @@ export async function POST(req: NextRequest) {
 
     if (method === 'CARD') {
       const checkoutPayload = {
-        items: [{ id: 'plan-pro', quantity: 1 }],
+        frequency: 'MULTIPLE_PAYMENTS',
+        products: [{ 
+          externalId: 'plan-pro',
+          name: 'Sistema Representante - Plano Pro',
+          description: 'Assinatura mensal do Plano Pro',
+          quantity: 1, 
+          price: 39700
+        }],
         customerId,
         methods: ['CARD'],
         returnUrl,
@@ -149,7 +156,14 @@ export async function POST(req: NextRequest) {
       });
     } else {
       const checkoutPayload = {
-        items: [{ id: 'plan-pro', quantity: 1 }],
+        frequency: 'ONE_TIME',
+        products: [{ 
+          externalId: 'plan-pro',
+          name: 'Sistema Representante - Plano Pro',
+          description: 'Assinatura mensal do Plano Pro',
+          quantity: 1, 
+          price: 39700
+        }],
         customerId,
         methods: ['PIX'],
         returnUrl,

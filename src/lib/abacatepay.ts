@@ -23,26 +23,25 @@ export interface Product {
 }
 
 export interface CreateCheckoutParams {
-  items: Product[];
+  frequency: 'ONE_TIME' | 'MULTIPLE_PAYMENTS';
+  products: {
+    externalId: string;
+    name: string;
+    description: string;
+    quantity: number;
+    price: number;
+  }[];
   customerId?: string;
   customer?: Customer;
   methods: ('PIX' | 'CARD')[];
   returnUrl: string;
   completionUrl: string;
+  allowCoupons?: boolean;
   externalId?: string;
   metadata?: Record<string, unknown>;
 }
 
-export interface CreateSubscriptionParams {
-  items: Product[];
-  customerId?: string;
-  customer?: Customer;
-  methods?: ('PIX' | 'CARD')[];
-  returnUrl: string;
-  completionUrl: string;
-  externalId?: string;
-  metadata?: Record<string, unknown>;
-}
+export interface CreateSubscriptionParams extends CreateCheckoutParams {}
 
 export interface CheckoutResponse {
   data: {
