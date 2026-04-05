@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 
-const ABACATEPAY_API_URL = process.env.NEXT_PUBLIC_ABACATEPAY_URL || 'https://api.abacatepay.com/v2';
+const ABACATEPAY_API_URL = process.env.NEXT_PUBLIC_ABACATEPAY_URL || 'https://api.abacatepay.com/v1';
 const ABACATEPAY_API_KEY = process.env.ABACATEPAY_API_KEY || '';
 const ABACATEPAY_PUBLIC_KEY = process.env.ABACATEPAY_PUBLIC_KEY || 't9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9';
 
@@ -183,11 +183,11 @@ class AbacatePay {
   }
 
   async createCustomer(customer: Customer): Promise<CustomerResponse> {
-    return this.request<CustomerResponse>('/customers/create', 'POST', customer);
+    return this.request<CustomerResponse>('/customer/create', 'POST', customer);
   }
 
   async getCustomer(customerId: string): Promise<CustomerResponse> {
-    return this.request<CustomerResponse>(`/customers/get?id=${customerId}`);
+    return this.request<CustomerResponse>(`/customer/get?id=${customerId}`);
   }
 
   async createProduct(product: {
@@ -209,7 +209,7 @@ class AbacatePay {
   }
 
   async createCheckout(checkout: CreateCheckoutParams): Promise<CheckoutResponse> {
-    return this.request<CheckoutResponse>('/checkouts/create', 'POST', checkout);
+    return this.request<CheckoutResponse>('/billing/create', 'POST', checkout);
   }
 
   async createSubscriptionCheckout(checkout: CreateSubscriptionParams): Promise<CheckoutResponse> {
@@ -217,7 +217,7 @@ class AbacatePay {
   }
 
   async getCheckout(checkoutId: string): Promise<CheckoutResponse> {
-    return this.request<CheckoutResponse>(`/checkouts/get?id=${checkoutId}`);
+    return this.request<CheckoutResponse>(`/billing/get?id=${checkoutId}`);
   }
 
   async cancelSubscription(subscriptionId: string): Promise<{ data: unknown; error: string | null; success: boolean }> {
