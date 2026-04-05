@@ -26,9 +26,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Fetch optic separately (no FK to profiles)
     const { data: optic, error: opticError } = await supabase
       .from('optics')
-      .select('*, profiles!inner(*)')
+      .select('*')
       .eq('id', optic_id)
       .single();
 
@@ -39,9 +40,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const profile = optic.profiles;
-    const taxId = profile.cnpj?.replace(/\D/g, '') || '';
-    const cellphone = profile.celular || '(00) 00000-0000';
+    // Fetch profile by matching CNPJ
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('cnpj', optic.cnpj)
+      .single();
+
+    const taxId = optic.cnpj?.replace(/\D/g, '') || '';
+    const cellphone = '(00) 00000-0000';
 
     let customerId: string | undefined;
     let customer;
@@ -56,8 +63,8 @@ export async function POST(req: NextRequest) {
       customerId = existingSubscription.abacatepay_customer_id;
     } else {
       customer = {
-        name: profile.name || optic.fantasy_name || 'Cliente',
-        email: profile.email,
+        name: profile?.full_name || optic.corporate_name || 'Cliente',
+        email: profile?.email || '',
         taxId: taxId,
         cellphone: cellphone,
       };
