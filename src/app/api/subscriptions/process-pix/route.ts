@@ -57,8 +57,15 @@ export async function POST() {
         const completionUrl = `${siteUrl}/lojista/upgrade?status=completed`;
         const externalId = `optic_${subscription.optic_id}_renew_${Date.now()}`;
 
-        const checkoutResponse = await abacatepay.createCheckout({
-          items: [{ id: 'plan-pro', quantity: 1 }],
+        const checkoutPayload = {
+          frequency: 'ONE_TIME',
+          products: [{ 
+            externalId: 'plan-pro',
+            name: 'Sistema Representante - Plano Pro',
+            description: 'Assinatura mensal do Plano Pro',
+            quantity: 1, 
+            price: 39700
+          }],
           customerId,
           methods: ['PIX'],
           returnUrl,
@@ -70,7 +77,9 @@ export async function POST() {
             is_first_payment: false,
             is_renewal: true,
           },
-        });
+        };
+
+        const checkoutResponse = await abacatepay.createCheckout(checkoutPayload as any);
 
         if (checkoutResponse.error) {
           console.error(`Erro ao criar cobrança para optic_id ${subscription.optic_id}:`, checkoutResponse.error);
