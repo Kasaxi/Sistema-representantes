@@ -69,8 +69,12 @@ export async function POST(req: NextRequest) {
         cellphone: cellphone,
       };
 
+      console.log('[Checkout Route] Creating AbacatePay Customer. Payload:', customer);
+
       const customerResponse = await abacatepay.createCustomer(customer);
       
+      console.log('[Checkout Route] Customer API Response:', customerResponse);
+
       if (customerResponse.error) {
         return NextResponse.json(
           { error: customerResponse.error },
@@ -81,13 +85,15 @@ export async function POST(req: NextRequest) {
       customerId = customerResponse.data.id;
     }
 
+    console.log('[Checkout Route] Target Customer ID:', customerId);
+
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
     const returnUrl = `${siteUrl}/lojista/upgrade?status=cancelled`;
     const completionUrl = `${siteUrl}/lojista/upgrade?status=completed`;
     const externalId = `optic_${optic_id}_${Date.now()}`;
 
     if (method === 'CARD') {
-      const checkoutResponse = await abacatepay.createSubscriptionCheckout({
+      const checkoutPayload = {
         items: [{ id: 'plan-pro', quantity: 1 }],
         customerId,
         methods: ['CARD'],
@@ -98,7 +104,13 @@ export async function POST(req: NextRequest) {
           optic_id,
           plan: 'pro',
         },
-      });
+      };
+
+      console.log('[Checkout Route] Creating CARD subscription checkout. Payload:', checkoutPayload);
+
+      const checkoutResponse = await abacatepay.createSubscriptionCheckout(checkoutPayload as any);
+
+      console.log('[Checkout Route] CARD Subscription API Response:', checkoutResponse);
 
       if (checkoutResponse.error) {
         return NextResponse.json(
@@ -136,7 +148,7 @@ export async function POST(req: NextRequest) {
         method: 'CARD',
       });
     } else {
-      const checkoutResponse = await abacatepay.createCheckout({
+      const checkoutPayload = {
         items: [{ id: 'plan-pro', quantity: 1 }],
         customerId,
         methods: ['PIX'],
@@ -148,7 +160,13 @@ export async function POST(req: NextRequest) {
           plan: 'pro',
           is_first_payment: true,
         },
-      });
+      };
+
+      console.log('[Checkout Route] Creating PIX checkout. Payload:', checkoutPayload);
+
+      const checkoutResponse = await abacatepay.createCheckout(checkoutPayload as any);
+
+      console.log('[Checkout Route] PIX Checkout API Response:', checkoutResponse);
 
       if (checkoutResponse.error) {
         return NextResponse.json(
